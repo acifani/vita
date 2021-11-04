@@ -54,6 +54,24 @@ func main() {
 	defer playPauseListener.Release()
 	playPauseButton.Call("addEventListener", "click", playPauseListener)
 
+	resetButton := document.Call("getElementById", "reset")
+	resetListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		universe.reset()
+		drawCanvas()
+		return nil
+	})
+	defer resetListener.Release()
+	resetButton.Call("addEventListener", "click", resetListener)
+
+	randomizeButton := document.Call("getElementById", "randomize")
+	randomizeListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		universe = NewUniverse()
+		drawCanvas()
+		return nil
+	})
+	defer randomizeListener.Release()
+	randomizeButton.Call("addEventListener", "click", randomizeListener)
+
 	window.Call("requestAnimationFrame", draw)
 
 	<-done

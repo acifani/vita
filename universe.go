@@ -100,3 +100,7 @@ func (u *Universe) toString() string {
 
 	return universeString
 }
+
+func (u *Universe) reset() {
+	u.cells = make([]uint8, u.width*u.height)
+}
