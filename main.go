@@ -158,7 +158,7 @@ func drawGrid() {
 	width := int(universe.width)
 
 	ctx.Call("beginPath")
-	ctx.Set("strokeStyle", "#aaa")
+	ctx.Set("strokeStyle", "#e0e1e4")
 
 	for i := 0; i <= width; i++ {
 		ctx.Call("moveTo", i*(cellSize+borderSize)+borderSize, 0)
@@ -180,7 +180,7 @@ func drawCells() {
 	ctx.Call("beginPath")
 
 	// Live cells
-	ctx.Set("fillStyle", "#222")
+	ctx.Set("fillStyle", "#3c4257")
 	for row := 0; row < height; row++ {
 		for col := 0; col < width; col++ {
 			idx := universe.getIndex(uint32(row), uint32(col))
@@ -196,7 +196,7 @@ func drawCells() {
 	}
 
 	// Dead cells
-	ctx.Set("fillStyle", "#fafafa")
+	ctx.Set("fillStyle", "#fff")
 	for row := 0; row < height; row++ {
 		for col := 0; col < width; col++ {
 			idx := universe.getIndex(uint32(row), uint32(col))

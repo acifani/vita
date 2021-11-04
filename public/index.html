@@ -6,8 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vita - Game of Life in WASM+Go</title>
     <style>
+        :root {
+            --bg-color: #fafafa;
+            --text-color: rgb(60, 66, 87);
+            --shadow-color: rgba(60, 66, 87, 0.36);
+            --border-color: rgba(60, 66, 87, 0.16);
+            --default-btn-bg-color: rgba(60, 66, 87, 0.1);
+            --default-btn-hover-bg-color: rgba(60, 66, 87, 0.2);
+            --outline-color: rgba(24, 144, 255, 0.36);
+            --primary-color: #1890ff;
+            --primary-color-l: #40a9ff;
+            --primary-color-d: #096dd9;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 0 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+        }
+
+        a {
+            color: var(--primary-color);
+        }
+
+        a:hover {
+            color: var(--primary-color-l);
+        }
+
+        a:active {
+            color: var(--primary-color-d);
+        }
+
+        input,
+        button {
+            transition: all 0.2s;
+            transition-property: box-shadow, background-color, color;
+            border-radius: 0.25rem;
         }
 
         canvas {
@@ -16,14 +56,64 @@
         }
 
         fieldset {
+            border: 1px solid var(--border-color);
             display: inline-block;
             border-radius: 0.25rem;
-            border-color: #eee;
+            margin-top: 0.5rem;
+        }
+
+        label,
+        legend {
+            font-weight: 500;
         }
 
         button {
-            padding: 0.25rem 0.5rem;
+            color: var(--text-color);
+            background-color: var(--default-btn-bg-color);
+            border: 0;
+            cursor: pointer;
             font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 0.75rem;
+        }
+
+        button:hover,
+        button:focus {
+            background-color: var(--default-btn-hover-bg-color);
+        }
+
+        button:active {
+            background-color: var(--border-color);
+        }
+
+        button:active,
+        button:focus {
+            box-shadow: var(--shadow-color) 0 0 0 3px;
+            outline: none;
+        }
+
+        button.primary {
+            color: white;
+            background-color: var(--primary-color);
+        }
+
+        button.primary:hover,
+        button.primary:focus {
+            background-color: var(--primary-color-l);
+
+        }
+
+        button.primary:active {
+            background-color: var(--primary-color-d);
+        }
+
+        button.primary:active,
+        button.primary:focus {
+            box-shadow: var(--outline-color) 0 0 0 3px;
+        }
+
+        .controls button {
+            margin-right: 0.5rem;
         }
 
         #gps {
@@ -40,13 +130,14 @@
 
     <p>
         Vita is an implementation of
-        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank" rel="noopener noreferrer">Conway's Game of Life</a>
+        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank"
+            rel="noopener noreferrer">Conway's Game of Life</a>
         with WebAssembly+Go, written by <a href="https://alessandrocifani.com">Alessandro Cifani</a>.
         <a href="https://github.com/acifani/vita">Source code</a>
     </p>
 
-    <div>
-        <button id="play-pause">Pause</button>
+    <div class="controls">
+        <button id="play-pause" class="primary">Pause</button>
         <button id="reset">Reset</button>
         <button id="randomize">Randomize</button>
     </div>
@@ -54,13 +145,15 @@
     <fieldset>
         <legend>On click</legend>
         <input type="radio" id="toggle" name="action" checked="true" />
-        <label htmlFor="toggle">Toggle single cell</label>
+        <label for="toggle">Toggle single cell</label>
 
         <input type="radio" id="glider" name="action" />
-        <label htmlFor="glider">Insert a <a href="https://www.conwaylife.com/wiki/Glider" target="_blank" rel="noopener noreferrer">Glider</a></label>
+        <label for="glider">Insert a <a href="https://www.conwaylife.com/wiki/Glider" target="_blank"
+                rel="noopener noreferrer">Glider</a></label>
 
         <input type="radio" id="pulsar" name="action" />
-        <label htmlFor="pulsar">Insert a <a href="https://www.conwaylife.com/wiki/Pulsar" target="_blank" rel="noopener noreferrer">Pulsar</a></label>
+        <label for="pulsar">Insert a <a href="https://www.conwaylife.com/wiki/Pulsar" target="_blank"
+                rel="noopener noreferrer">Pulsar</a></label>
     </fieldset>
 
     <p>Generations per second: <span id="gps"></span></p>
