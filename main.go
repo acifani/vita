@@ -11,6 +11,12 @@ const (
 )
 
 const (
+	toggleAction = iota
+	gliderAction = iota
+	pulsarAction = iota
+)
+
+const (
 	cellSize   = 10
 	borderSize = 1
 )
@@ -19,6 +25,7 @@ var (
 	universe    *Universe
 	ctx         js.Value
 	animationID int = -1
+	clickAction     = toggleAction
 )
 
 func main() {
@@ -52,18 +59,33 @@ func main() {
 		row := uint32(math.Floor(float64(canvasY) / (cellSize + borderSize)))
 		col := uint32(math.Floor(float64(canvasX) / (cellSize + borderSize)))
 
-		if args[0].Get("ctrlKey").Bool() {
+		switch clickAction {
+		case gliderAction:
 			figure := glider()
 			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
-		} else if args[0].Get("shiftKey").Bool() {
+		case pulsarAction:
 			figure := pulsar()
 			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
-		} else {
-			// Toggle a single cell
+		default:
 			universe.toggleCellAt(row, col)
 		}
 
 		drawCanvas()
+		return nil
+	})
+
+	addEventListener("toggle", "click", func(this js.Value, args []js.Value) interface{} {
+		clickAction = toggleAction
+		return nil
+	})
+
+	addEventListener("glider", "click", func(this js.Value, args []js.Value) interface{} {
+		clickAction = gliderAction
+		return nil
+	})
+
+	addEventListener("pulsar", "click", func(this js.Value, args []js.Value) interface{} {
+		clickAction = pulsarAction
 		return nil
 	})
 
