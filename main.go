@@ -43,7 +43,7 @@ func main() {
 
 	// Add event listeners
 
-	canvasClickListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	addEventListener("canvas", "click", func(this js.Value, args []js.Value) interface{} {
 		boundingRect := canvas.Call("getBoundingClientRect")
 		widthScale := canvas.Get("width").Int() / boundingRect.Get("width").Int()
 		heightScale := canvas.Get("height").Int() / boundingRect.Get("height").Int()
@@ -126,11 +126,9 @@ func main() {
 		drawCanvas()
 		return nil
 	})
-	defer canvasClickListener.Release()
-	canvas.Call("addEventListener", "click", canvasClickListener)
 
 	playPauseButton := document.Call("getElementById", "play-pause")
-	playPauseListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	addEventListener("play-pause", "click", func(this js.Value, args []js.Value) interface{} {
 		if animationID != -1 {
 			playPauseButton.Set("textContent", "Play")
 			window.Call("cancelAnimationFrame", animationID)
@@ -141,26 +139,18 @@ func main() {
 		}
 		return nil
 	})
-	defer playPauseListener.Release()
-	playPauseButton.Call("addEventListener", "click", playPauseListener)
 
-	resetButton := document.Call("getElementById", "reset")
-	resetListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	addEventListener("reset", "click", func(this js.Value, args []js.Value) interface{} {
 		universe.reset()
 		drawCanvas()
 		return nil
 	})
-	defer resetListener.Release()
-	resetButton.Call("addEventListener", "click", resetListener)
 
-	randomizeButton := document.Call("getElementById", "randomize")
-	randomizeListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	addEventListener("randomize", "click", func(this js.Value, args []js.Value) interface{} {
 		universe = NewUniverse()
 		drawCanvas()
 		return nil
 	})
-	defer randomizeListener.Release()
-	randomizeButton.Call("addEventListener", "click", randomizeListener)
 
 	// Start rendering
 	window.Call("requestAnimationFrame", draw)
@@ -242,4 +232,11 @@ func drawCells() {
 	}
 
 	ctx.Call("stroke")
+}
+
+func addEventListener(elementID string, eventName string, callback func(this js.Value, args []js.Value) interface{}) {
+	js.Global().
+		Get("document").
+		Call("getElementById", elementID).
+		Call("addEventListener", eventName, js.FuncOf(callback))
 }
