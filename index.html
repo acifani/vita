@@ -25,6 +25,10 @@
             padding: 0.25rem 0.5rem;
             font-size: 1rem;
         }
+
+        #gps {
+            font-family: monospace;
+        }
     </style>
     <script src="./wasm_exec.js"></script>
     <script src="./index.js"></script>
@@ -57,6 +61,8 @@
         <input type="radio" id="pulsar" name="action" />
         <label htmlFor="pulsar">Insert a <a href="https://www.conwaylife.com/wiki/Pulsar" target="_blank" rel="noopener noreferrer">Pulsar</a></label>
     </fieldset>
+
+    <p>Generations per second: <span id="gps"></span></p>
 
     <noscript>This page is powered by WebAssembly, you need JavaScript to run the game.</noscript>
     <canvas id="canvas"></canvas>
