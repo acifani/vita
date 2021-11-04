@@ -24,6 +24,7 @@ const (
 var (
 	universe    *Universe
 	ctx         js.Value
+	lastTick    float64
 	animationID int = -1
 	clickAction     = toggleAction
 )
@@ -38,10 +39,26 @@ func main() {
 	canvas := setupCanvas()
 	ctx = canvas.Call("getContext", "2d")
 
+	gps := document.Call("getElementById", "gps")
+	ticks := float64(0)
+
 	// Rendering loop
 	var draw js.Func
 	draw = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		universe.tick()
+
+		ticks = ticks + 1
+
+		if ticks >= 20 {
+			now := window.Get("performance").Call("now").Float()
+			elapsedMs := now - lastTick
+			lastTick = now
+			// Number of frames divided by the seconds that have passed
+			generationsPerSecond := ticks / (elapsedMs / 1000)
+			gps.Set("innerText", int(generationsPerSecond))
+			ticks = 0
+		}
+
 		drawCanvas()
 		animationID = window.Call("requestAnimationFrame", draw).Int()
 		return nil
@@ -115,6 +132,7 @@ func main() {
 	})
 
 	// Start rendering
+	lastTick = window.Get("performance").Call("now").Float()
 	window.Call("requestAnimationFrame", draw)
 
 	// Block and wait for event listeners
