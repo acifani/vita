@@ -84,23 +84,6 @@ func (u *Universe) tick() {
 	u.cells = newCells
 }
 
-func (u *Universe) toString() string {
-	universeString := ""
-	for i, cell := range u.cells {
-		if cell == alive {
-			universeString += "◼"
-		} else {
-			universeString += "◻"
-		}
-
-		if (i+1)%int(u.width) == 0 {
-			universeString += "\n"
-		}
-	}
-
-	return universeString
-}
-
 func (u *Universe) reset() {
 	u.cells = make([]uint8, u.width*u.height)
 }
