@@ -113,3 +113,12 @@ func (u *Universe) toggleCellAt(row, column uint32) {
 		u.cells[idx] = alive
 	}
 }
+
+func (u *Universe) setRectangle(startingRow, startingColumn uint32, values [][]uint8) {
+	for i, row := range values {
+		for j, value := range row {
+			idx := u.getIndex(startingRow+uint32(i), startingColumn+uint32(j))
+			u.cells[idx] = value
+		}
+	}
+}

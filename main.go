@@ -53,71 +53,11 @@ func main() {
 		col := uint32(math.Floor(float64(canvasX) / (cellSize + borderSize)))
 
 		if args[0].Get("ctrlKey").Bool() {
-			// Insert glider
-			universe.toggleCellAt(row-1, col)
-			universe.toggleCellAt(row, col+1)
-			universe.toggleCellAt(row+1, col-1)
-			universe.toggleCellAt(row+1, col)
-			universe.toggleCellAt(row+1, col+1)
+			figure := glider()
+			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
 		} else if args[0].Get("shiftKey").Bool() {
-			// Insert pulsar
-			universe.toggleCellAt(row-6, col-4)
-			universe.toggleCellAt(row-6, col-3)
-			universe.toggleCellAt(row-6, col-2)
-			universe.toggleCellAt(row-6, col+2)
-			universe.toggleCellAt(row-6, col+3)
-			universe.toggleCellAt(row-6, col+4)
-
-			universe.toggleCellAt(row-4, col-6)
-			universe.toggleCellAt(row-4, col-1)
-			universe.toggleCellAt(row-4, col+1)
-			universe.toggleCellAt(row-4, col+6)
-
-			universe.toggleCellAt(row-3, col-6)
-			universe.toggleCellAt(row-3, col-1)
-			universe.toggleCellAt(row-3, col+1)
-			universe.toggleCellAt(row-3, col+6)
-
-			universe.toggleCellAt(row-2, col-6)
-			universe.toggleCellAt(row-2, col-1)
-			universe.toggleCellAt(row-2, col+1)
-			universe.toggleCellAt(row-2, col+6)
-
-			universe.toggleCellAt(row-1, col-4)
-			universe.toggleCellAt(row-1, col-3)
-			universe.toggleCellAt(row-1, col-2)
-			universe.toggleCellAt(row-1, col+2)
-			universe.toggleCellAt(row-1, col+3)
-			universe.toggleCellAt(row-1, col+4)
-
-			universe.toggleCellAt(row+1, col-4)
-			universe.toggleCellAt(row+1, col-3)
-			universe.toggleCellAt(row+1, col-2)
-			universe.toggleCellAt(row+1, col+2)
-			universe.toggleCellAt(row+1, col+3)
-			universe.toggleCellAt(row+1, col+4)
-
-			universe.toggleCellAt(row+2, col-6)
-			universe.toggleCellAt(row+2, col-1)
-			universe.toggleCellAt(row+2, col+1)
-			universe.toggleCellAt(row+2, col+6)
-
-			universe.toggleCellAt(row+3, col-6)
-			universe.toggleCellAt(row+3, col-1)
-			universe.toggleCellAt(row+3, col+1)
-			universe.toggleCellAt(row+3, col+6)
-
-			universe.toggleCellAt(row+4, col-6)
-			universe.toggleCellAt(row+4, col-1)
-			universe.toggleCellAt(row+4, col+1)
-			universe.toggleCellAt(row+4, col+6)
-
-			universe.toggleCellAt(row+6, col-4)
-			universe.toggleCellAt(row+6, col-3)
-			universe.toggleCellAt(row+6, col-2)
-			universe.toggleCellAt(row+6, col+2)
-			universe.toggleCellAt(row+6, col+3)
-			universe.toggleCellAt(row+6, col+4)
+			figure := pulsar()
+			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
 		} else {
 			// Toggle a single cell
 			universe.toggleCellAt(row, col)
