@@ -49,10 +49,80 @@ func main() {
 		heightScale := canvas.Get("height").Int() / boundingRect.Get("height").Int()
 		canvasX := (args[0].Get("clientX").Int() - boundingRect.Get("left").Int()) * widthScale
 		canvasY := (args[0].Get("clientY").Int() - boundingRect.Get("top").Int()) * heightScale
-		row := math.Floor(float64(canvasY) / (cellSize + borderSize))
-		col := math.Floor(float64(canvasX) / (cellSize + borderSize))
+		row := uint32(math.Floor(float64(canvasY) / (cellSize + borderSize)))
+		col := uint32(math.Floor(float64(canvasX) / (cellSize + borderSize)))
 
-		universe.toggleCellAt(uint32(row), uint32(col))
+		if args[0].Get("ctrlKey").Bool() {
+			// Insert glider
+			universe.toggleCellAt(row-1, col)
+			universe.toggleCellAt(row, col+1)
+			universe.toggleCellAt(row+1, col-1)
+			universe.toggleCellAt(row+1, col)
+			universe.toggleCellAt(row+1, col+1)
+		} else if args[0].Get("shiftKey").Bool() {
+			// Insert pulsar
+			universe.toggleCellAt(row-6, col-4)
+			universe.toggleCellAt(row-6, col-3)
+			universe.toggleCellAt(row-6, col-2)
+			universe.toggleCellAt(row-6, col+2)
+			universe.toggleCellAt(row-6, col+3)
+			universe.toggleCellAt(row-6, col+4)
+
+			universe.toggleCellAt(row-4, col-6)
+			universe.toggleCellAt(row-4, col-1)
+			universe.toggleCellAt(row-4, col+1)
+			universe.toggleCellAt(row-4, col+6)
+
+			universe.toggleCellAt(row-3, col-6)
+			universe.toggleCellAt(row-3, col-1)
+			universe.toggleCellAt(row-3, col+1)
+			universe.toggleCellAt(row-3, col+6)
+
+			universe.toggleCellAt(row-2, col-6)
+			universe.toggleCellAt(row-2, col-1)
+			universe.toggleCellAt(row-2, col+1)
+			universe.toggleCellAt(row-2, col+6)
+
+			universe.toggleCellAt(row-1, col-4)
+			universe.toggleCellAt(row-1, col-3)
+			universe.toggleCellAt(row-1, col-2)
+			universe.toggleCellAt(row-1, col+2)
+			universe.toggleCellAt(row-1, col+3)
+			universe.toggleCellAt(row-1, col+4)
+
+			universe.toggleCellAt(row+1, col-4)
+			universe.toggleCellAt(row+1, col-3)
+			universe.toggleCellAt(row+1, col-2)
+			universe.toggleCellAt(row+1, col+2)
+			universe.toggleCellAt(row+1, col+3)
+			universe.toggleCellAt(row+1, col+4)
+
+			universe.toggleCellAt(row+2, col-6)
+			universe.toggleCellAt(row+2, col-1)
+			universe.toggleCellAt(row+2, col+1)
+			universe.toggleCellAt(row+2, col+6)
+
+			universe.toggleCellAt(row+3, col-6)
+			universe.toggleCellAt(row+3, col-1)
+			universe.toggleCellAt(row+3, col+1)
+			universe.toggleCellAt(row+3, col+6)
+
+			universe.toggleCellAt(row+4, col-6)
+			universe.toggleCellAt(row+4, col-1)
+			universe.toggleCellAt(row+4, col+1)
+			universe.toggleCellAt(row+4, col+6)
+
+			universe.toggleCellAt(row+6, col-4)
+			universe.toggleCellAt(row+6, col-3)
+			universe.toggleCellAt(row+6, col-2)
+			universe.toggleCellAt(row+6, col+2)
+			universe.toggleCellAt(row+6, col+3)
+			universe.toggleCellAt(row+6, col+4)
+		} else {
+			// Toggle a single cell
+			universe.toggleCellAt(row, col)
+		}
+
 		drawCanvas()
 		return nil
 	})
