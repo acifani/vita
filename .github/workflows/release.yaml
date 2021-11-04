@@ -12,13 +12,16 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: setup go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
+      - name: setup tinygo
+        run: |
+          wget https://github.com/tinygo-org/tinygo/releases/download/v0.20.0/tinygo_0.20.0_amd64.deb -q
+          sudo dpkg -i tinygo_0.20.0_amd64.deb
+          export PATH=$PATH:/usr/local/tinygo/bin
+          tinygo version
+          rm ./tinygo_0.20.0_amd64.deb
 
       - name: build
-        run: make build
+        run: make build_tinygo
 
       - name: deploy to gh pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
