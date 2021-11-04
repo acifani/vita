@@ -15,8 +15,9 @@ const (
 )
 
 var (
-	universe *Universe
-	ctx      js.Value
+	universe    *Universe
+	ctx         js.Value
+	animationID int = -1
 )
 
 func main() {
@@ -24,6 +25,8 @@ func main() {
 
 	universe = NewUniverse()
 	window := js.Global()
+	document := window.Get("document")
+
 	canvas := setupCanvas()
 	ctx = canvas.Call("getContext", "2d")
 
@@ -31,10 +34,25 @@ func main() {
 	draw = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		universe.tick()
 		drawCanvas()
-		window.Call("requestAnimationFrame", draw)
+		animationID = window.Call("requestAnimationFrame", draw).Int()
 		return nil
 	})
 	defer draw.Release()
+
+	playPauseButton := document.Call("getElementById", "play-pause")
+	playPauseListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		if animationID != -1 {
+			playPauseButton.Set("textContent", "Play")
+			window.Call("cancelAnimationFrame", animationID)
+			animationID = -1
+		} else {
+			playPauseButton.Set("textContent", "Pause")
+			window.Call("requestAnimationFrame", draw)
+		}
+		return nil
+	})
+	defer playPauseListener.Release()
+	playPauseButton.Call("addEventListener", "click", playPauseListener)
 
 	window.Call("requestAnimationFrame", draw)
 
