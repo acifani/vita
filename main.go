@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"syscall/js"
 )
 
@@ -30,6 +31,7 @@ func main() {
 	canvas := setupCanvas()
 	ctx = canvas.Call("getContext", "2d")
 
+	// Rendering loop
 	var draw js.Func
 	draw = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		universe.tick()
@@ -38,6 +40,24 @@ func main() {
 		return nil
 	})
 	defer draw.Release()
+
+	// Add event listeners
+
+	canvasClickListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		boundingRect := canvas.Call("getBoundingClientRect")
+		widthScale := canvas.Get("width").Int() / boundingRect.Get("width").Int()
+		heightScale := canvas.Get("height").Int() / boundingRect.Get("height").Int()
+		canvasX := (args[0].Get("clientX").Int() - boundingRect.Get("left").Int()) * widthScale
+		canvasY := (args[0].Get("clientY").Int() - boundingRect.Get("top").Int()) * heightScale
+		row := math.Floor(float64(canvasY) / (cellSize + borderSize))
+		col := math.Floor(float64(canvasX) / (cellSize + borderSize))
+
+		universe.toggleCellAt(uint32(row), uint32(col))
+		drawCanvas()
+		return nil
+	})
+	defer canvasClickListener.Release()
+	canvas.Call("addEventListener", "click", canvasClickListener)
 
 	playPauseButton := document.Call("getElementById", "play-pause")
 	playPauseListener := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -72,14 +92,15 @@ func main() {
 	defer randomizeListener.Release()
 	randomizeButton.Call("addEventListener", "click", randomizeListener)
 
+	// Start rendering
 	window.Call("requestAnimationFrame", draw)
 
+	// Block and wait for event listeners
 	<-done
 }
 
 func setupCanvas() js.Value {
-	window := js.Global()
-	document := window.Get("document")
+	document := js.Global().Get("document")
 	canvas := document.Call("getElementById", "canvas")
 	canvas.Set("height", (cellSize+borderSize)*universe.height+borderSize)
 	canvas.Set("width", (cellSize+borderSize)*universe.width+borderSize)

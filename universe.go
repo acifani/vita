@@ -104,3 +104,12 @@ func (u *Universe) toString() string {
 func (u *Universe) reset() {
 	u.cells = make([]uint8, u.width*u.height)
 }
+
+func (u *Universe) toggleCellAt(row, column uint32) {
+	idx := u.getIndex(row, column)
+	if u.cells[idx] == alive {
+		u.cells[idx] = dead
+	} else {
+		u.cells[idx] = alive
+	}
+}
