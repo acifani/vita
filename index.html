@@ -12,14 +12,15 @@
             margin-top: 1rem;
         }
 
-        kbd {
-            background-color: #eee;
-            color: #333;
+        fieldset {
             display: inline-block;
-            font-size: .9rem;
-            font-weight: 700;
-            line-height: 1;
-            padding: 2px 4px;
+            border-radius: 0.25rem;
+            border-color: #eee;
+        }
+
+        button {
+            padding: 0.25rem 0.5rem;
+            font-size: 1rem;
         }
     </style>
     <script src="./wasm_exec.js"></script>
@@ -27,14 +28,23 @@
 </head>
 
 <body>
-    <button id="play-pause">Pause</button>
-    <button id="reset">Reset</button>
-    <button id="randomize">Randomize</button>
-    <p>
-        <kbd>Click</kbd> to toggle cell.
-        <kbd>Shift</kbd>+<kbd>click</kbd> to insert Pulsar.
-        <kbd>Ctrl</kbd>+<kbd>click</kbd> to insert Glider.
-    </p>
+    <h1>Vita</h1>
+    <div>
+        <button id="play-pause">Pause</button>
+        <button id="reset">Reset</button>
+        <button id="randomize">Randomize</button>
+    </div>
+    <fieldset>
+        <legend>On click</legend>
+        <input type="radio" id="toggle" name="action" checked="true" />
+        <label htmlFor="toggle">Toggle single cell</label>
+
+        <input type="radio" id="glider" name="action" />
+        <label htmlFor="glider">Insert a <a href="https://www.conwaylife.com/wiki/Glider" target="_blank" rel="noopener noreferrer">Glider</a></label>
+
+        <input type="radio" id="pulsar" name="action" />
+        <label htmlFor="pulsar">Insert a <a href="https://www.conwaylife.com/wiki/Pulsar" target="_blank" rel="noopener noreferrer">Pulsar</a></label>
+    </fieldset>
     <canvas id="canvas"></canvas>
 </body>
 
