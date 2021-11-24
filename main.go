@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"strconv"
 	"syscall/js"
 )
 
@@ -22,17 +23,19 @@ const (
 )
 
 var (
-	universe    *Universe
-	ctx         js.Value
-	lastTick    float64
-	animationID int = -1
-	clickAction     = toggleAction
+	universe       *Universe
+	ctx            js.Value
+	lastTick       float64
+	animationID    = -1
+	clickAction    = toggleAction
+	livePopulation = 50
+	renderingSpeed = 50
 )
 
 func main() {
 	done := make(chan bool)
 
-	universe = NewUniverse()
+	universe = NewUniverse(livePopulation)
 	window := js.Global()
 	document := window.Get("document")
 
@@ -41,22 +44,27 @@ func main() {
 
 	gps := document.Call("getElementById", "gps")
 	ticks := float64(0)
+	renderingLoops := 0
 
 	// Rendering loop
 	var draw js.Func
 	draw = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		universe.tick()
+		renderingLoops = renderingLoops + 1
+		if renderingLoops > (5 - renderingSpeed) {
+			universe.tick()
+			renderingLoops = 0
 
-		ticks = ticks + 1
+			ticks = ticks + 1
 
-		if ticks >= 20 {
-			now := window.Get("performance").Call("now").Float()
-			elapsedMs := now - lastTick
-			lastTick = now
-			// Number of frames divided by the seconds that have passed
-			generationsPerSecond := ticks / (elapsedMs / 1000)
-			gps.Set("innerText", int(generationsPerSecond))
-			ticks = 0
+			if ticks >= 20 {
+				now := window.Get("performance").Call("now").Float()
+				elapsedMs := now - lastTick
+				lastTick = now
+				// Number of frames divided by the seconds that have passed
+				generationsPerSecond := ticks / (elapsedMs / 1000)
+				gps.Set("innerText", int(generationsPerSecond))
+				ticks = 0
+			}
 		}
 
 		drawCanvas()
@@ -66,6 +74,20 @@ func main() {
 	defer draw.Release()
 
 	// Add event listeners
+
+	addEventListener("live-population", "change", func(this js.Value, args []js.Value) interface{} {
+		newValue := args[0].Get("target").Get("value").String()
+		livePopulation, _ = strconv.Atoi(newValue)
+		universe = NewUniverse(livePopulation)
+		return nil
+	})
+
+	addEventListener("rendering-speed", "change", func(this js.Value, args []js.Value) interface{} {
+		newValue := args[0].Get("target").Get("value").String()
+		renderingSpeed, _ = strconv.Atoi(newValue)
+		drawCanvas()
+		return nil
+	})
 
 	addEventListener("canvas", "click", func(this js.Value, args []js.Value) interface{} {
 		boundingRect := canvas.Call("getBoundingClientRect")
@@ -126,7 +148,7 @@ func main() {
 	})
 
 	addEventListener("randomize", "click", func(this js.Value, args []js.Value) interface{} {
-		universe = NewUniverse()
+		universe = NewUniverse(livePopulation)
 		drawCanvas()
 		return nil
 	})

@@ -8,13 +8,13 @@ type Universe struct {
 	cells  []uint8
 }
 
-func NewUniverse() *Universe {
+func NewUniverse(livePopulation int) *Universe {
 	width := uint32(64)
 	height := uint32(64)
 	cells := make([]uint8, width*height)
 
 	for i := range cells {
-		if rand.Intn(100) < 50 {
+		if rand.Intn(100) < livePopulation {
 			cells[i] = alive
 		} else {
 			cells[i] = dead
