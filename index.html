@@ -130,6 +130,16 @@
             font-family: monospace;
             font-size: 1.2rem;
         }
+
+        .slider {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        input[type="range"] {
+            margin: 0;
+        }
     </style>
     <script src="./wasm_exec.js"></script>
     <script src="./index.js"></script>
@@ -166,6 +176,24 @@
             <label for="pulsar">Insert a <a href="https://www.conwaylife.com/wiki/Pulsar" target="_blank"
                     rel="noopener noreferrer">Pulsar</a></label>
         </fieldset>
+
+        <div class="slider">
+            <label for="live-population">Live cells amount</label>
+            <input type="range" id="live-population" name="live-population" min="0" max="100" step="5" value="50" />
+        </div>
+
+        <div class="slider">
+            <label for="rendering-speed">Rendering speed</label>
+            <input type="range" id="rendering-speed" name="rendering-speed" list="rendering-marks" min="1" max="5"
+                value="5" />
+            <datalist id="rendering-marks">
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+            </datalist>
+        </div>
 
         <p>Generations per second: <span id="gps"></span></p>
     </main>
