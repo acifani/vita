@@ -4,11 +4,8 @@ import (
 	"math"
 	"strconv"
 	"syscall/js"
-)
 
-const (
-	dead  = iota
-	alive = iota
+	"github.com/acifani/vita/lib/game"
 )
 
 const (
@@ -23,7 +20,7 @@ const (
 )
 
 var (
-	universe       *Universe
+	universe       *game.Universe
 	ctx            js.Value
 	lastTick       float64
 	animationID    = -1
@@ -35,7 +32,7 @@ var (
 func main() {
 	done := make(chan bool)
 
-	universe = NewUniverse(livePopulation)
+	universe = game.NewUniverse(livePopulation)
 	window := js.Global()
 	document := window.Get("document")
 
@@ -51,7 +48,7 @@ func main() {
 	draw = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		renderingLoops = renderingLoops + 1
 		if renderingLoops > (5 - renderingSpeed) {
-			universe.tick()
+			universe.Tick()
 			renderingLoops = 0
 
 			ticks = ticks + 1
@@ -78,7 +75,7 @@ func main() {
 	addEventListener("live-population", "change", func(this js.Value, args []js.Value) interface{} {
 		newValue := args[0].Get("target").Get("value").String()
 		livePopulation, _ = strconv.Atoi(newValue)
-		universe = NewUniverse(livePopulation)
+		universe = game.NewUniverse(livePopulation)
 		return nil
 	})
 
@@ -101,12 +98,12 @@ func main() {
 		switch clickAction {
 		case gliderAction:
 			figure := glider()
-			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
+			universe.SetRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
 		case pulsarAction:
 			figure := pulsar()
-			universe.setRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
+			universe.SetRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
 		default:
-			universe.toggleCellAt(row, col)
+			universe.ToggleCellAt(row, col)
 		}
 
 		drawCanvas()
@@ -142,13 +139,13 @@ func main() {
 	})
 
 	addEventListener("reset", "click", func(this js.Value, args []js.Value) interface{} {
-		universe.reset()
+		universe.Reset()
 		drawCanvas()
 		return nil
 	})
 
 	addEventListener("randomize", "click", func(this js.Value, args []js.Value) interface{} {
-		universe = NewUniverse(livePopulation)
+		universe = game.NewUniverse(livePopulation)
 		drawCanvas()
 		return nil
 	})
@@ -164,8 +161,8 @@ func main() {
 func setupCanvas() js.Value {
 	document := js.Global().Get("document")
 	canvas := document.Call("getElementById", "canvas")
-	canvas.Set("height", (cellSize+borderSize)*universe.height+borderSize)
-	canvas.Set("width", (cellSize+borderSize)*universe.width+borderSize)
+	canvas.Set("height", (cellSize+borderSize)*universe.Height()+borderSize)
+	canvas.Set("width", (cellSize+borderSize)*universe.Width()+borderSize)
 
 	return canvas
 }
@@ -176,8 +173,8 @@ func drawCanvas() {
 }
 
 func drawGrid() {
-	height := int(universe.height)
-	width := int(universe.width)
+	height := int(universe.Height())
+	width := int(universe.Width())
 
 	ctx.Call("beginPath")
 	ctx.Set("strokeStyle", "#e0e1e4")
@@ -196,8 +193,8 @@ func drawGrid() {
 }
 
 func drawCells() {
-	height := int(universe.height)
-	width := int(universe.width)
+	height := int(universe.Height())
+	width := int(universe.Width())
 
 	ctx.Call("beginPath")
 
@@ -205,8 +202,8 @@ func drawCells() {
 	ctx.Set("fillStyle", "#3c4257")
 	for row := 0; row < height; row++ {
 		for col := 0; col < width; col++ {
-			idx := universe.getIndex(uint32(row), uint32(col))
-			if universe.cells[idx] == alive {
+			idx := universe.GetIndex(uint32(row), uint32(col))
+			if universe.Cell(idx) == game.Alive {
 				ctx.Call("fillRect",
 					col*(cellSize+borderSize)+borderSize,
 					row*(cellSize+borderSize)+borderSize,
@@ -221,8 +218,8 @@ func drawCells() {
 	ctx.Set("fillStyle", "#fff")
 	for row := 0; row < height; row++ {
 		for col := 0; col < width; col++ {
-			idx := universe.getIndex(uint32(row), uint32(col))
-			if universe.cells[idx] == dead {
+			idx := universe.GetIndex(uint32(row), uint32(col))
+			if universe.Cell(idx) == game.Dead {
 				ctx.Call("fillRect",
 					col*(cellSize+borderSize)+borderSize,
 					row*(cellSize+borderSize)+borderSize,

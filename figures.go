@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/acifani/vita/lib/game"
+)
+
 type figure struct {
 	deltaX uint32
 	deltaY uint32
@@ -11,8 +15,8 @@ type figure struct {
 // they're characters from the Canadian Aboriginal Syllabics block,
 // which are allowed in Go identifiers.
 const (
-	ᑕᑐ = dead
-	ᕳᕲ = alive
+	ᑕᑐ = game.Dead
+	ᕳᕲ = game.Alive
 )
 
 func glider() *figure {
