@@ -15,7 +15,7 @@ jobs:
       - name: setup tinygo
         uses: acifani/setup-tinygo@v1
         with:
-          tinygo-version: 0.20.0
+          tinygo-version: 0.30.0
 
       - name: build
         run: make build_tinygo
