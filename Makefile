@@ -9,7 +9,10 @@ copy_wasm_exec:
 build: build_wasm copy_wasm_exec
 
 run: build
-	serve ./public
+	go run ./serve
+
+run_tinygo: build_tinygo
+	go run ./serve
 
 build_wasm_tinygo:
 	tinygo build -o ./public/vita.wasm -target wasm .
