@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: setup tinygo
-        uses: acifani/setup-tinygo@v1
+        uses: acifani/setup-tinygo@v2
         with:
           tinygo-version: 0.30.0
 
@@ -21,7 +21,7 @@ jobs:
         run: make build_tinygo
 
       - name: deploy to gh pages
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: public
