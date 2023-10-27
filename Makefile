@@ -15,7 +15,7 @@ run_tinygo: build_tinygo
 	go run ./serve
 
 build_wasm_tinygo:
-	tinygo build -o ./public/vita.wasm -target wasm .
+	tinygo build -o ./public/vita.wasm -target wasm -no-debug .
 
 copy_wasm_exec_tinygo:
 	cp "`tinygo env TINYGOROOT`/targets/wasm_exec.js" ./public/
