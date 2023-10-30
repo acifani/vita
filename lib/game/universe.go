@@ -81,19 +81,20 @@ func (u *Universe) Tick() {
 			cell := u.cells[cellIndex]
 			liveNeighbors := u.AliveNeighbors(row, column)
 
-			if cell == Alive && liveNeighbors < 2 {
+			switch {
+			case cell == Alive && liveNeighbors < 2:
 				// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
 				u.newCells[cellIndex] = Dead
-			} else if cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3) {
+			case cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
 				// 2. Any live cell with two or three live neighbours lives on to the next generation.
 				u.newCells[cellIndex] = Alive
-			} else if cell == Alive && liveNeighbors > 3 {
+			case cell == Alive && liveNeighbors > 3:
 				// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
 				u.newCells[cellIndex] = Dead
-			} else if cell == Dead && liveNeighbors == 3 {
+			case cell == Dead && liveNeighbors == 3:
 				// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 				u.newCells[cellIndex] = Alive
-			} else {
+			default:
 				u.newCells[cellIndex] = cell
 			}
 		}
