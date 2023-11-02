@@ -14,19 +14,9 @@ type Universe struct {
 	newCells []uint8
 }
 
-func NewUniverse(livePopulation int) *Universe {
-	width := uint32(64)
-	height := uint32(64)
+func NewUniverse(width, height uint32) *Universe {
 	cells := make([]uint8, width*height)
 	newCells := make([]uint8, width*height)
-
-	for i := range cells {
-		if rand.Intn(100) < livePopulation {
-			cells[i] = Alive
-		} else {
-			cells[i] = Dead
-		}
-	}
 
 	return &Universe{
 		height:   height,
@@ -104,9 +94,17 @@ func (u *Universe) Tick() {
 }
 
 func (u *Universe) Reset() {
-	for row := uint32(0); row < u.width; row++ {
-		for column := uint32(0); column < u.height; column++ {
-			u.cells[u.GetIndex(row, column)] = Dead
+	for i := range u.cells {
+		u.cells[i] = Dead
+	}
+}
+
+func (u *Universe) Randomize(livePopulation int) {
+	for i := range u.cells {
+		if rand.Intn(100) < livePopulation {
+			u.cells[i] = Alive
+		} else {
+			u.cells[i] = Dead
 		}
 	}
 }
