@@ -1,0 +1,19 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup tinygo
+        uses: acifani/setup-tinygo@v2
+        with:
+          tinygo-version: 0.30.0
+
+      - name: test
+        run: make tinygo_test
