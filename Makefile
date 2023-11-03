@@ -1,6 +1,12 @@
 SHELL=/bin/bash
 
-build_wasm:
+test:
+	go test ./lib/game/ -v
+
+tinygo_test:
+	tinygo test -v ./lib/game/
+
+build_wasm: test
 	GOOS=js GOARCH=wasm go build -o ./public/vita.wasm .
 
 copy_wasm_exec:
@@ -14,7 +20,7 @@ run: build
 run_tinygo: build_tinygo
 	go run ./serve
 
-build_wasm_tinygo:
+build_wasm_tinygo: tinygo_test
 	tinygo build -o ./public/vita.wasm -target wasm -no-debug -panic=trap -opt=s .
 
 copy_wasm_exec_tinygo:
