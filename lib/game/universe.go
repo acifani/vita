@@ -39,6 +39,20 @@ func (u *Universe) Width() uint32 {
 	return u.width
 }
 
+func (u *Universe) Size() int {
+	return len(u.cells)
+}
+
+func (u *Universe) Dead() bool {
+	for i := range u.cells {
+		if u.cells[i] == Alive {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (u *Universe) Cell(idx uint32) uint8 {
 	return u.cells[idx]
 }
@@ -115,6 +129,24 @@ func (u *Universe) SetRectangle(startingRow, startingColumn uint32, values [][]u
 			u.cells[idx] = value
 		}
 	}
+}
+
+func (u *Universe) Read(p []byte) (n int, err error) {
+	if len(p) != u.Size() {
+		return 0, errInvalidLength
+	}
+
+	copy(p, u.cells)
+	return len(p), nil
+}
+
+func (u *Universe) Write(p []byte) (n int, err error) {
+	if len(p) != u.Size() {
+		return 0, errInvalidLength
+	}
+
+	copy(u.cells, p)
+	return len(p), nil
 }
 
 func rule(state uint8, liveNeighbors uint8) uint8 {
