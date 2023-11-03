@@ -15,20 +15,21 @@ type Universe struct {
 	cells    []uint8
 	newCells []uint8
 
-	Rule func(state uint8, liveNeighbors uint8) uint8
+	Rules func(cell uint8, row, column uint32) uint8
 }
 
 func NewUniverse(height, width uint32) *Universe {
 	cells := make([]uint8, height*width)
 	newCells := make([]uint8, height*width)
 
-	return &Universe{
+	u := &Universe{
 		height:   height,
 		width:    width,
 		cells:    cells,
 		newCells: newCells,
-		Rule:     rule,
 	}
+	u.Rules = u.ConwayRules
+	return u
 }
 
 func (u *Universe) Height() uint32 {
@@ -61,36 +62,13 @@ func (u *Universe) GetIndex(row, column uint32) uint32 {
 	return row*u.width + column
 }
 
-func (u *Universe) AliveNeighbors(row, column uint32) uint8 {
-	count := uint8(0)
-
-	// We use height/width and modulos to avoid manually handling edge cases
-	// (literally: cases at the edge of the universe, e.g. cells at row/col 0).
-	for _, rowDiff := range []uint32{u.height - 1, 0, 1} {
-		for _, colDiff := range []uint32{u.width - 1, 0, 1} {
-			if rowDiff == 0 && colDiff == 0 {
-				// Skip checking the cell itself
-				continue
-			}
-
-			neighborRow := (row + rowDiff) % u.height
-			neighborColumn := (column + colDiff) % u.width
-			neighborIdx := u.GetIndex(neighborRow, neighborColumn)
-			count += u.cells[neighborIdx]
-		}
-	}
-
-	return count
-}
-
 func (u *Universe) Tick() {
 	for row := uint32(0); row < u.height; row++ {
 		for column := uint32(0); column < u.width; column++ {
 			cellIndex := u.GetIndex(row, column)
 			cell := u.cells[cellIndex]
-			liveNeighbors := u.AliveNeighbors(row, column)
 
-			u.newCells[cellIndex] = u.Rule(cell, liveNeighbors)
+			u.newCells[cellIndex] = u.Rules(cell, row, column)
 		}
 	}
 
@@ -147,23 +125,4 @@ func (u *Universe) Write(p []byte) (n int, err error) {
 
 	copy(u.cells, p)
 	return len(p), nil
-}
-
-func rule(state uint8, liveNeighbors uint8) uint8 {
-	switch {
-	case state == Alive && liveNeighbors < 2:
-		// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-		return Dead
-	case state == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
-		// 2. Any live cell with two or three live neighbours lives on to the next generation.
-		return Alive
-	case state == Alive && liveNeighbors > 3:
-		// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
-		return Dead
-	case state == Dead && liveNeighbors == 3:
-		// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-		return Alive
-	default:
-		return state
-	}
 }
