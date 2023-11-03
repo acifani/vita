@@ -1,6 +1,8 @@
 package game
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 const (
 	Dead = iota
@@ -14,19 +16,9 @@ type Universe struct {
 	newCells []uint8
 }
 
-func NewUniverse(livePopulation int) *Universe {
-	width := uint32(64)
-	height := uint32(64)
-	cells := make([]uint8, width*height)
-	newCells := make([]uint8, width*height)
-
-	for i := range cells {
-		if rand.Intn(100) < livePopulation {
-			cells[i] = Alive
-		} else {
-			cells[i] = Dead
-		}
-	}
+func NewUniverse(height, width uint32) *Universe {
+	cells := make([]uint8, height*width)
+	newCells := make([]uint8, height*width)
 
 	return &Universe{
 		height:   height,
@@ -75,25 +67,26 @@ func (u *Universe) AliveNeighbors(row, column uint32) uint8 {
 }
 
 func (u *Universe) Tick() {
-	for row := uint32(0); row < u.width; row++ {
-		for column := uint32(0); column < u.height; column++ {
+	for row := uint32(0); row < u.height; row++ {
+		for column := uint32(0); column < u.width; column++ {
 			cellIndex := u.GetIndex(row, column)
 			cell := u.cells[cellIndex]
 			liveNeighbors := u.AliveNeighbors(row, column)
 
-			if cell == Alive && liveNeighbors < 2 {
+			switch {
+			case cell == Alive && liveNeighbors < 2:
 				// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
 				u.newCells[cellIndex] = Dead
-			} else if cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3) {
+			case cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
 				// 2. Any live cell with two or three live neighbours lives on to the next generation.
 				u.newCells[cellIndex] = Alive
-			} else if cell == Alive && liveNeighbors > 3 {
+			case cell == Alive && liveNeighbors > 3:
 				// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
 				u.newCells[cellIndex] = Dead
-			} else if cell == Dead && liveNeighbors == 3 {
+			case cell == Dead && liveNeighbors == 3:
 				// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 				u.newCells[cellIndex] = Alive
-			} else {
+			default:
 				u.newCells[cellIndex] = cell
 			}
 		}
@@ -103,9 +96,17 @@ func (u *Universe) Tick() {
 }
 
 func (u *Universe) Reset() {
-	for row := uint32(0); row < u.width; row++ {
-		for column := uint32(0); column < u.height; column++ {
-			u.cells[u.GetIndex(row, column)] = Dead
+	for i := range u.cells {
+		u.cells[i] = Dead
+	}
+}
+
+func (u *Universe) Randomize(livePopulation int) {
+	for i := range u.cells {
+		if rand.Intn(100) < livePopulation {
+			u.cells[i] = Alive
+		} else {
+			u.cells[i] = Dead
 		}
 	}
 }

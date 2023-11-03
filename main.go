@@ -23,16 +23,19 @@ var (
 	universe       *game.Universe
 	ctx            js.Value
 	lastTick       float64
-	animationID    = -1
-	clickAction    = toggleAction
-	livePopulation = 50
-	renderingSpeed = 50
+	animationID           = -1
+	clickAction           = toggleAction
+	width, height  uint32 = 64, 64
+	livePopulation        = 50
+	renderingSpeed        = 50
 )
 
 func main() {
 	done := make(chan bool)
 
-	universe = game.NewUniverse(livePopulation)
+	universe = game.NewUniverse(width, height)
+	universe.Randomize(livePopulation)
+
 	window := js.Global()
 	document := window.Get("document")
 
@@ -75,7 +78,7 @@ func main() {
 	addEventListener("live-population", "change", func(this js.Value, args []js.Value) interface{} {
 		newValue := args[0].Get("target").Get("value").String()
 		livePopulation, _ = strconv.Atoi(newValue)
-		universe = game.NewUniverse(livePopulation)
+		universe.Randomize(livePopulation)
 		return nil
 	})
 
@@ -145,7 +148,7 @@ func main() {
 	})
 
 	addEventListener("randomize", "click", func(this js.Value, args []js.Value) interface{} {
-		universe = game.NewUniverse(livePopulation)
+		universe.Randomize(livePopulation)
 		drawCanvas()
 		return nil
 	})
