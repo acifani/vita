@@ -128,4 +128,47 @@ func TestUniverse(t *testing.T) {
 			t.Errorf("Expected cell to be dead, got %d", rule(Dead, 4))
 		}
 	})
+
+	t.Run("ReaderWriter", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+		u.Randomize(50)
+		if u.Dead() {
+			t.Errorf("Expected universe to be alive, got dead")
+		}
+
+		data := make([]byte, u.Size())
+		u.Read(data)
+
+		u2 := NewUniverse(24, 32)
+		if !u2.Dead() {
+			t.Errorf("Expected universe to be dead, got alive")
+		}
+
+		u2.Write(data)
+
+		if u2.Dead() {
+			t.Errorf("Expected universe to be alive, got dead")
+		}
+
+		var i uint32
+		for i = 0; i < uint32(u.Size()); i++ {
+			if u.Cell(i) != u2.Cell(i) {
+				t.Errorf("Expected cell %d in u2 to be %d, got %d", i, u.Cell(uint32(i)), u2.Cell(uint32(i)))
+			}
+		}
+	})
+
+	t.Run("Read and Write when invalid", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+		u.Randomize(50)
+
+		data := make([]byte, 10)
+		if _, err := u.Read(data); err != errInvalidLength {
+			t.Errorf("Expected error to be %v, got %v", errInvalidLength, err)
+		}
+
+		if _, err := u.Write(data); err != errInvalidLength {
+			t.Errorf("Expected error to be %v, got %v", errInvalidLength, err)
+		}
+	})
 }
