@@ -1,6 +1,8 @@
 package game
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 const (
 	Dead = iota
@@ -14,9 +16,9 @@ type Universe struct {
 	newCells []uint8
 }
 
-func NewUniverse(width, height uint32) *Universe {
-	cells := make([]uint8, width*height)
-	newCells := make([]uint8, width*height)
+func NewUniverse(height, width uint32) *Universe {
+	cells := make([]uint8, height*width)
+	newCells := make([]uint8, height*width)
 
 	return &Universe{
 		height:   height,
@@ -65,8 +67,8 @@ func (u *Universe) AliveNeighbors(row, column uint32) uint8 {
 }
 
 func (u *Universe) Tick() {
-	for row := uint32(0); row < u.width; row++ {
-		for column := uint32(0); column < u.height; column++ {
+	for row := uint32(0); row < u.height; row++ {
+		for column := uint32(0); column < u.width; column++ {
 			cellIndex := u.GetIndex(row, column)
 			cell := u.cells[cellIndex]
 			liveNeighbors := u.AliveNeighbors(row, column)
