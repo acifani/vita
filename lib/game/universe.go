@@ -14,6 +14,8 @@ type Universe struct {
 	width    uint32
 	cells    []uint8
 	newCells []uint8
+
+	Rule func(state uint8, liveNeighbors uint8) uint8
 }
 
 func NewUniverse(height, width uint32) *Universe {
@@ -25,6 +27,7 @@ func NewUniverse(height, width uint32) *Universe {
 		width:    width,
 		cells:    cells,
 		newCells: newCells,
+		Rule:     rule,
 	}
 }
 
@@ -73,22 +76,7 @@ func (u *Universe) Tick() {
 			cell := u.cells[cellIndex]
 			liveNeighbors := u.AliveNeighbors(row, column)
 
-			switch {
-			case cell == Alive && liveNeighbors < 2:
-				// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-				u.newCells[cellIndex] = Dead
-			case cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
-				// 2. Any live cell with two or three live neighbours lives on to the next generation.
-				u.newCells[cellIndex] = Alive
-			case cell == Alive && liveNeighbors > 3:
-				// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
-				u.newCells[cellIndex] = Dead
-			case cell == Dead && liveNeighbors == 3:
-				// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-				u.newCells[cellIndex] = Alive
-			default:
-				u.newCells[cellIndex] = cell
-			}
+			u.newCells[cellIndex] = u.Rule(cell, liveNeighbors)
 		}
 	}
 
@@ -126,5 +114,24 @@ func (u *Universe) SetRectangle(startingRow, startingColumn uint32, values [][]u
 			idx := u.GetIndex(startingRow+uint32(i), startingColumn+uint32(j))
 			u.cells[idx] = value
 		}
+	}
+}
+
+func rule(state uint8, liveNeighbors uint8) uint8 {
+	switch {
+	case state == Alive && liveNeighbors < 2:
+		// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+		return Dead
+	case state == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
+		// 2. Any live cell with two or three live neighbours lives on to the next generation.
+		return Alive
+	case state == Alive && liveNeighbors > 3:
+		// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
+		return Dead
+	case state == Dead && liveNeighbors == 3:
+		// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+		return Alive
+	default:
+		return state
 	}
 }

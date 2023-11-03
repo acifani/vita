@@ -84,4 +84,48 @@ func TestUniverse(t *testing.T) {
 			t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.AliveNeighbors(11, 13))
 		}
 	})
+
+	t.Run("Rule when cell is Alive", func(t *testing.T) {
+		if rule(Alive, 0) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Alive, 0))
+		}
+
+		if rule(Alive, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Alive, 1))
+		}
+
+		if rule(Alive, 2) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", rule(Alive, 2))
+		}
+
+		if rule(Alive, 3) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", rule(Alive, 3))
+		}
+
+		if rule(Alive, 4) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Alive, 4))
+		}
+	})
+
+	t.Run("Rule when cell is Dead", func(t *testing.T) {
+		if rule(Dead, 0) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Dead, 0))
+		}
+
+		if rule(Dead, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Dead, 1))
+		}
+
+		if rule(Dead, 2) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Dead, 2))
+		}
+
+		if rule(Dead, 3) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", rule(Dead, 3))
+		}
+
+		if rule(Dead, 4) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", rule(Dead, 4))
+		}
+	})
 }
