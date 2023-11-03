@@ -16,4 +16,4 @@ jobs:
           tinygo-version: 0.30.0
 
       - name: test
-        run: make tinygo_test
+        run: make test
