@@ -13,3 +13,9 @@ build: build_wasm copy_wasm_exec
 
 run: build
 	go run ./serve
+
+build_wasi:
+	spin build
+
+run_wasi: build_wasi
+	spin up
