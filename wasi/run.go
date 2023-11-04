@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/acifani/vita/lib/game"
-	spinhttp "github.com/fermyon/spin/sdk/go/http"
-	kv "github.com/fermyon/spin/sdk/go/key_value"
+	spinhttp "github.com/fermyon/spin/sdk/go/v2/http"
+	"github.com/fermyon/spin/sdk/go/v2/kv"
 )
 
 const (
@@ -20,14 +20,14 @@ func init() {
 		var localCopy = make([]byte, width*height)
 		universe := game.NewUniverse(width, height)
 
-		store, err := kv.Open("default")
+		store, err := kv.OpenStore("default")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer kv.Close(store)
+		defer store.Close()
 
-		exists, err := kv.Exists(store, key)
+		exists, err := store.Exists(key)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -36,10 +36,10 @@ func init() {
 		if !exists {
 			universe.Randomize(livePopulation)
 			universe.Read(localCopy)
-			kv.Set(store, key, localCopy)
+			store.Set(key, localCopy)
 		}
 
-		remoteCopy, err := kv.Get(store, key)
+		remoteCopy, err := store.Get(key)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -64,7 +64,7 @@ func init() {
 		universe.Write(remoteCopy)
 		universe.Tick()
 		universe.Read(localCopy)
-		kv.Set(store, key, localCopy)
+		store.Set(key, localCopy)
 	})
 }
 
