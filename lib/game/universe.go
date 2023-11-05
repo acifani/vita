@@ -15,6 +15,9 @@ type Universe struct {
 	cells    []uint8
 	newCells []uint8
 
+	multiverse       bool
+	multiverseColumn []uint8
+
 	Rules func(cell uint8, row, column uint32) uint8
 }
 
@@ -29,6 +32,13 @@ func NewUniverse(height, width uint32) *Universe {
 		newCells: newCells,
 	}
 	u.Rules = u.ConwayRules
+	return u
+}
+
+func NewMultiverse(height, width uint32) *Universe {
+	u := NewUniverse(height, width)
+	u.multiverse = true
+	u.multiverseColumn = make([]uint8, height)
 	return u
 }
 
@@ -125,4 +135,25 @@ func (u *Universe) Write(p []byte) (n int, err error) {
 
 	copy(u.cells, p)
 	return len(p), nil
+}
+
+func (u *Universe) MakeContact(column []uint8) {
+	if len(column) == int(u.height) {
+		copy(u.multiverseColumn, column)
+	}
+}
+
+func (u *Universe) Draw() string {
+	drawing := ""
+	for idx, cell := range u.cells {
+		if idx > 0 && idx%int(u.height) == 0 {
+			drawing += "\n"
+		}
+
+		if cell == Alive {
+			drawing += "O "
+		} else {
+			drawing += ". "
+		}
+	}
 }

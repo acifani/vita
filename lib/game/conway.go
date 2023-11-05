@@ -44,6 +44,18 @@ func (u *Universe) MooreNeighbors(row, column uint32) uint8 {
 			neighborRow := (row + rowDiff) % u.height
 			neighborColumn := (column + colDiff) % u.width
 			neighborIdx := u.GetIndex(neighborRow, neighborColumn)
+
+			// If we are in a multiverse,
+			// and we are at column 0,
+			// and we would check neighbors at column-1,
+			// then we want to check the information given by the other universe instead
+			if u.multiverse && column == 0 && colDiff == u.width-1 {
+				if u.multiverseColumn[neighborRow] == Alive {
+					count++
+					continue
+				}
+			}
+
 			if u.Cell(neighborIdx) == Alive {
 				count++
 			}

@@ -30,6 +30,26 @@ func TestConwayRule(t *testing.T) {
 		}
 	})
 
+	t.Run("MooreNeighbors in multiverse", func(t *testing.T) {
+		u := NewMultiverse(4, 4)
+		u.MakeContact([]uint8{0, 1, 1, 0})
+
+		expected := [][]uint8{
+			{1, 0, 0, 0},
+			{2, 0, 0, 0},
+			{2, 0, 0, 0},
+			{1, 0, 0, 0},
+		}
+
+		for row := uint32(0); row < 4; row++ {
+			for col := uint32(0); col < 4; col++ {
+				if u.MooreNeighbors(row, col) != expected[row][col] {
+					t.Errorf("Expected cell %d,%d to have 1 alive neighbors, got %d", row, col, u.MooreNeighbors(0, 0))
+				}
+			}
+		}
+	})
+
 	t.Run("RuleB3S23 when cell is Alive", func(t *testing.T) {
 		if RuleB3S23(Alive, 0) != Dead {
 			t.Errorf("Expected cell to be dead, got %d", RuleB3S23(Alive, 0))
