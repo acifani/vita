@@ -52,7 +52,7 @@ func init() {
 
 		db := redis.NewClient(redisHost)
 
-		universe := game.NewUniverse(height, width)
+		universe := game.NewMultiverse(height, width)
 		res, err := db.Execute("EXISTS", key)
 		if err != nil {
 			return errorLogger(err)
@@ -82,7 +82,28 @@ func init() {
 		}
 
 		universe.Write(remoteState)
+
+		fmt.Println("making contact")
+		incomingColumn := make([]uint8, height)
+		for idx, cell := range incomingMsg[1:] {
+			switch cell {
+			case '1':
+				incomingColumn[idx] = game.Alive
+			case '0':
+				incomingColumn[idx] = game.Dead
+			}
+		}
+		universe.MakeContact(incomingColumn)
+
+		drawing := universe.Draw()
+		fmt.Println("Before")
+		fmt.Println(drawing)
+
 		universe.Tick()
+
+		drawing = universe.Draw()
+		fmt.Println("After")
+		fmt.Println(drawing)
 
 		universe.Read(localState)
 
