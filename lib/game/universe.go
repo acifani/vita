@@ -156,4 +156,6 @@ func (u *Universe) Draw() string {
 			drawing += ". "
 		}
 	}
+
+	return drawing
 }
