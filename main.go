@@ -100,11 +100,11 @@ func main() {
 
 		switch clickAction {
 		case gliderAction:
-			figure := glider()
-			universe.SetRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
+			figure := game.Glider()
+			universe.SetRectangle(row-figure.DeltaX(), col-figure.DeltaY(), figure.Values())
 		case pulsarAction:
-			figure := pulsar()
-			universe.SetRectangle(row-figure.deltaX, col-figure.deltaY, figure.values)
+			figure := game.Pulsar()
+			universe.SetRectangle(row-figure.DeltaX(), col-figure.DeltaY(), figure.Values())
 		default:
 			universe.ToggleCellAt(row, col)
 		}
