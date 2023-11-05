@@ -81,7 +81,7 @@ func init() {
 			return errorLogger(err)
 		}
 
-		universe.Read(remoteState)
+		universe.Write(remoteState)
 		universe.Tick()
 
 		universe.Read(localState)
