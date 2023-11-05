@@ -33,6 +33,10 @@ func TestUniverse(t *testing.T) {
 
 		u.Tick()
 
+		if u.Stable() {
+			t.Errorf("Expected universe to not be stable")
+		}
+
 		if u.MooreNeighbors(0, 0) != 0 {
 			t.Errorf("Expected cell %d to have 0 alive neighbors, got %d", 0, u.MooreNeighbors(0, 0))
 		}
@@ -42,6 +46,10 @@ func TestUniverse(t *testing.T) {
 		}
 
 		u.Tick()
+
+		if u.Stable() {
+			t.Errorf("Expected universe to not be stable")
+		}
 
 		if u.Cell(u.GetIndex(11, 12)) != Dead {
 			t.Errorf("Expected cell %d to be dead, got %d", u.GetIndex(11, 12), u.Cell(u.GetIndex(11, 12)))
@@ -57,6 +65,31 @@ func TestUniverse(t *testing.T) {
 
 		if u.MooreNeighbors(11, 13) != 3 {
 			t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.MooreNeighbors(11, 13))
+		}
+	})
+
+	t.Run("Stable", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+
+		// https://conwaylife.com/wiki/Beehive
+		u.cells[u.GetIndex(2, 1)] = Alive
+		u.cells[u.GetIndex(3, 1)] = Alive
+		u.cells[u.GetIndex(1, 2)] = Alive
+		u.cells[u.GetIndex(4, 2)] = Alive
+		u.cells[u.GetIndex(4, 2)] = Alive
+		u.cells[u.GetIndex(2, 3)] = Alive
+		u.cells[u.GetIndex(3, 3)] = Alive
+
+		u.Tick()
+
+		if !u.Stable() {
+			t.Errorf("Expected universe to be stable")
+		}
+
+		u.Tick()
+
+		if !u.Stable() {
+			t.Errorf("Expected universe to be stable")
 		}
 	})
 

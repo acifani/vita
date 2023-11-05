@@ -1,7 +1,7 @@
 package game
 
 import (
-	"math/rand"
+	"strings"
 )
 
 const (
@@ -14,6 +14,7 @@ type Universe struct {
 	width    uint32
 	cells    []uint8
 	newCells []uint8
+	stable   bool
 
 	multiverse       bool
 	multiverseColumn []uint8
@@ -64,6 +65,13 @@ func (u *Universe) Dead() bool {
 	return true
 }
 
+// Stable returns true if the universe has reached a stable state.
+// A stable state is one in which no cells have changed between ticks.
+// See https://conwaylife.com/wiki/Still_life for more information.
+func (u *Universe) Stable() bool {
+	return u.stable
+}
+
 func (u *Universe) Cell(idx uint32) uint8 {
 	return u.cells[idx]
 }
@@ -73,15 +81,20 @@ func (u *Universe) GetIndex(row, column uint32) uint32 {
 }
 
 func (u *Universe) Tick() {
+	stable := true
 	for row := uint32(0); row < u.height; row++ {
 		for column := uint32(0); column < u.width; column++ {
 			cellIndex := u.GetIndex(row, column)
 			cell := u.cells[cellIndex]
 
 			u.newCells[cellIndex] = u.Rules(cell, row, column)
+			if u.newCells[cellIndex] != cell {
+				stable = false
+			}
 		}
 	}
 
+	u.stable = stable
 	copy(u.cells, u.newCells)
 }
 
@@ -93,7 +106,7 @@ func (u *Universe) Reset() {
 
 func (u *Universe) Randomize(livePopulation int) {
 	for i := range u.cells {
-		if rand.Intn(100) < livePopulation {
+		if randomNumber() < livePopulation {
 			u.cells[i] = Alive
 		} else {
 			u.cells[i] = Dead
@@ -143,19 +156,19 @@ func (u *Universe) MakeContact(column []uint8) {
 	}
 }
 
-func (u *Universe) Draw() string {
-	drawing := ""
-	for idx, cell := range u.cells {
-		if idx > 0 && idx%int(u.height) == 0 {
-			drawing += "\n"
+func (u *Universe) String() string {
+	builder := strings.Builder{}
+	for i := 0; i < len(u.cells); i++ {
+		if i%int(u.width) == 0 && i != 0 {
+			builder.WriteString("\n")
 		}
-
-		if cell == Alive {
-			drawing += "O "
+		if u.cells[i] == Dead {
+			builder.WriteString(". ")
 		} else {
-			drawing += ". "
+			builder.WriteString("O ")
 		}
 	}
+	builder.WriteString("\n")
 
-	return drawing
+	return builder.String()
 }

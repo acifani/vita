@@ -95,15 +95,13 @@ func init() {
 		}
 		universe.MakeContact(incomingColumn)
 
-		drawing := universe.Draw()
 		fmt.Println("Before")
-		fmt.Println(drawing)
+		fmt.Println(universe)
 
 		universe.Tick()
 
-		drawing = universe.Draw()
 		fmt.Println("After")
-		fmt.Println(drawing)
+		fmt.Println(universe)
 
 		universe.Read(localState)
 
