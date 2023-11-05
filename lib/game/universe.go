@@ -1,5 +1,9 @@
 package game
 
+import (
+	"strings"
+)
+
 const (
 	Dead = iota
 	Alive
@@ -134,4 +138,21 @@ func (u *Universe) Write(p []byte) (n int, err error) {
 
 	copy(u.cells, p)
 	return len(p), nil
+}
+
+func (u *Universe) String() string {
+	builder := strings.Builder{}
+	for i := 0; i < len(u.cells); i++ {
+		if i%int(u.width) == 0 && i != 0 {
+			builder.WriteString("\n")
+		}
+		if u.cells[i] == Dead {
+			builder.WriteString(".")
+		} else {
+			builder.WriteString("O")
+		}
+	}
+	builder.WriteString("\n")
+
+	return builder.String()
 }
