@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/acifani/vita/lib/game"
 )
@@ -17,26 +18,10 @@ func main() {
 	universe := game.NewUniverse(uint32(*height), uint32(*width))
 	universe.Randomize(*population)
 
-	b := make([]byte, *height**width)
-
 	for i := 0; i < *generations; i++ {
-		universe.Read(b)
-		output(b, *width)
+		fmt.Println(universe)
+		fmt.Println()
+
 		universe.Tick()
 	}
-}
-
-func output(b []byte, width int) {
-	for i := 0; i < len(b); i++ {
-		if i%width == 0 {
-			println()
-		}
-		if b[i] == game.Dead {
-			print(".")
-		} else {
-			print("O")
-		}
-	}
-	println()
-	println()
 }
