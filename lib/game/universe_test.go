@@ -60,6 +60,25 @@ func TestUniverse(t *testing.T) {
 		}
 	})
 
+	t.Run("Stable", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+
+		// https://conwaylife.com/wiki/Beehive
+		u.cells[u.GetIndex(2, 1)] = Alive
+		u.cells[u.GetIndex(3, 1)] = Alive
+		u.cells[u.GetIndex(1, 2)] = Alive
+		u.cells[u.GetIndex(4, 2)] = Alive
+		u.cells[u.GetIndex(4, 2)] = Alive
+		u.cells[u.GetIndex(2, 3)] = Alive
+		u.cells[u.GetIndex(3, 3)] = Alive
+
+		u.Tick()
+
+		if !u.Stable() {
+			t.Errorf("Expected universe to be stable")
+		}
+	})
+
 	t.Run("ReaderWriter", func(t *testing.T) {
 		u := NewUniverse(24, 32)
 		u.Randomize(50)

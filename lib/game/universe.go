@@ -14,6 +14,7 @@ type Universe struct {
 	width    uint32
 	cells    []uint8
 	newCells []uint8
+	stable   bool
 
 	Rules func(cell uint8, row, column uint32) uint8
 }
@@ -54,6 +55,13 @@ func (u *Universe) Dead() bool {
 	return true
 }
 
+// Stable returns true if the universe has reached a stable state.
+// A stable state is one in which no cells have changed between ticks.
+// See https://conwaylife.com/wiki/Still_life for more information.
+func (u *Universe) Stable() bool {
+	return u.stable
+}
+
 func (u *Universe) Cell(idx uint32) uint8 {
 	return u.cells[idx]
 }
@@ -63,15 +71,20 @@ func (u *Universe) GetIndex(row, column uint32) uint32 {
 }
 
 func (u *Universe) Tick() {
+	stable := true
 	for row := uint32(0); row < u.height; row++ {
 		for column := uint32(0); column < u.width; column++ {
 			cellIndex := u.GetIndex(row, column)
 			cell := u.cells[cellIndex]
 
 			u.newCells[cellIndex] = u.Rules(cell, row, column)
+			if u.newCells[cellIndex] != cell {
+				stable = false
+			}
 		}
 	}
 
+	u.stable = stable
 	copy(u.cells, u.newCells)
 }
 
