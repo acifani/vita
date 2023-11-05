@@ -72,13 +72,7 @@ func TestUniverse(t *testing.T) {
 		u := NewUniverse(24, 32)
 
 		// https://conwaylife.com/wiki/Beehive
-		u.cells[u.GetIndex(2, 1)] = Alive
-		u.cells[u.GetIndex(3, 1)] = Alive
-		u.cells[u.GetIndex(1, 2)] = Alive
-		u.cells[u.GetIndex(4, 2)] = Alive
-		u.cells[u.GetIndex(4, 2)] = Alive
-		u.cells[u.GetIndex(2, 3)] = Alive
-		u.cells[u.GetIndex(3, 3)] = Alive
+		u.SetRectangle(3, 3, Beehive().Values())
 
 		u.Tick()
 

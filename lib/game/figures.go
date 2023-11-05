@@ -1,13 +1,21 @@
-package main
+package game
 
-import (
-	"github.com/acifani/vita/lib/game"
-)
-
-type figure struct {
+type Figure struct {
 	deltaX uint32
 	deltaY uint32
 	values [][]uint8
+}
+
+func (f *Figure) DeltaX() uint32 {
+	return f.deltaX
+}
+
+func (f *Figure) DeltaY() uint32 {
+	return f.deltaY
+}
+
+func (f *Figure) Values() [][]uint8 {
+	return f.values
 }
 
 // Inspired by: https://www.reddit.com/r/rust/comments/5penft/comment/dcsq64p
@@ -15,12 +23,12 @@ type figure struct {
 // they're characters from the Canadian Aboriginal Syllabics block,
 // which are allowed in Go identifiers.
 const (
-	ᑕᑐ = game.Dead
-	ᕳᕲ = game.Alive
+	ᑕᑐ = Dead
+	ᕳᕲ = Alive
 )
 
-func glider() *figure {
-	return &figure{
+func Glider() *Figure {
+	return &Figure{
 		deltaX: 1,
 		deltaY: 1,
 		values: [][]uint8{
@@ -31,8 +39,8 @@ func glider() *figure {
 	}
 }
 
-func pulsar() *figure {
-	return &figure{
+func Pulsar() *Figure {
+	return &Figure{
 		deltaX: 6,
 		deltaY: 6,
 		values: [][]uint8{
@@ -49,6 +57,18 @@ func pulsar() *figure {
 			{ᕳᕲ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᕳᕲ, ᑕᑐ, ᕳᕲ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᕳᕲ},
 			{ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᑕᑐ},
 			{ᑕᑐ, ᑕᑐ, ᕳᕲ, ᕳᕲ, ᕳᕲ, ᑕᑐ, ᑕᑐ, ᑕᑐ, ᕳᕲ, ᕳᕲ, ᕳᕲ, ᑕᑐ, ᑕᑐ},
+		},
+	}
+}
+
+func Beehive() *Figure {
+	return &Figure{
+		deltaX: 1,
+		deltaY: 1,
+		values: [][]uint8{
+			{ᑕᑐ, ᕳᕲ, ᕳᕲ, ᑕᑐ},
+			{ᕳᕲ, ᑕᑐ, ᑕᑐ, ᕳᕲ},
+			{ᑕᑐ, ᕳᕲ, ᕳᕲ, ᑕᑐ},
 		},
 	}
 }
