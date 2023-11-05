@@ -5,9 +5,9 @@ import (
 )
 
 func randomNumber() int {
-	var b [1]byte
+	var b [8]byte
 	rand.Read(b[:])
-	val := int(b[0]) >> 1
+	val := int(b[7]) >> 1
 	if val > 100 {
 		val = val >> 1
 	}
