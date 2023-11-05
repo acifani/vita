@@ -1,9 +1,5 @@
 package game
 
-import (
-	"math/rand"
-)
-
 const (
 	Dead = iota
 	Alive
@@ -96,7 +92,7 @@ func (u *Universe) Reset() {
 
 func (u *Universe) Randomize(livePopulation int) {
 	for i := range u.cells {
-		if rand.Intn(100) < livePopulation {
+		if randomNumber() < livePopulation {
 			u.cells[i] = Alive
 		} else {
 			u.cells[i] = Dead
