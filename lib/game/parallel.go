@@ -6,7 +6,7 @@ import (
 
 type NeighborData struct {
 	Generation uint32
-	Data       []uint8
+	Cells      []uint8
 }
 
 type NeighborConnection struct {
@@ -50,20 +50,18 @@ func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
 	r, c := int32(row), int32(column)
 	for _, neighborRow := range []int32{r - 1, r, r + 1} {
 		for _, neighborColumn := range []int32{c - 1, c, c + 1} {
-			if neighborRow == r && neighborColumn == c {
+			switch {
+			case neighborRow == r && neighborColumn == c:
 				// Skip checking the cell itself
 				continue
-			}
-
-			switch {
 			case neighborRow < 0 && neighborColumn < 0:
-				// check the universe above and to the left?
+				// TODO: check the universe above and to the left for 1 pixel?
 			case neighborRow < 0 && neighborColumn >= int32(p.width):
-				// check the universe above and to the right?
+				// TODO: check the universe above and to the right for 1 pixel?
 			case neighborRow >= int32(p.height) && neighborColumn < 0:
-				// check the universe below and to the left?
+				// TODO: check the universe below and to the left for 1 pixel?
 			case neighborRow >= int32(p.height) && neighborColumn >= int32(p.width):
-				// check the universe below and to the right?
+				// check the universe below and to the right for one pixel?
 			case neighborRow < 0:
 				// check the universe above
 				if p.TopNeighbor == nil {
@@ -71,7 +69,7 @@ func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
 				}
 
 				neighborIdx := p.GetIndex(p.height-1, uint32(neighborColumn))
-				if p.TopNeighbor.Data.Data[neighborIdx] != Dead {
+				if p.TopNeighbor.Data.Cells[neighborIdx] != Dead {
 					count++
 				}
 			case neighborRow >= int32(p.height):
@@ -81,7 +79,7 @@ func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
 				}
 
 				neighborIdx := p.GetIndex(0, uint32(neighborColumn))
-				if p.BottomNeighbor.Data.Data[neighborIdx] != Dead {
+				if p.BottomNeighbor.Data.Cells[neighborIdx] != Dead {
 					count++
 				}
 			case neighborColumn < 0:
@@ -91,7 +89,7 @@ func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
 				}
 
 				neighborIdx := p.GetIndex(uint32(neighborRow), p.width-1)
-				if p.LeftNeighbor.Data.Data[neighborIdx] != Dead {
+				if p.LeftNeighbor.Data.Cells[neighborIdx] != Dead {
 					count++
 				}
 			case neighborColumn >= int32(p.width):
@@ -101,7 +99,7 @@ func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
 				}
 
 				neighborIdx := p.GetIndex(uint32(neighborRow), 0)
-				if p.RightNeighbor.Data.Data[neighborIdx] != Dead {
+				if p.RightNeighbor.Data.Cells[neighborIdx] != Dead {
 					count++
 				}
 			default:
@@ -162,9 +160,9 @@ func (p *ParallelUniverse) SendDataToNeighbors() {
 	var wg sync.WaitGroup
 	data := NeighborData{
 		Generation: p.Generation,
-		Data:       make([]uint8, len(p.cells)),
+		Cells:      make([]uint8, len(p.cells)),
 	}
-	copy(data.Data, p.cells)
+	copy(data.Cells, p.cells)
 
 	if p.TopNeighbor != nil {
 		wg.Add(1)

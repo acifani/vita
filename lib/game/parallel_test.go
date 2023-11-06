@@ -1,6 +1,7 @@
 package game
 
 import (
+	"sync"
 	"testing"
 )
 
@@ -88,7 +89,7 @@ func TestNeighborData(t *testing.T) {
 		u2.SendDataToNeighbors()
 		u.WaitForNeighborsData()
 
-		if len(u.TopNeighbor.Data.Data) != len(u2.cells) {
+		if len(u.TopNeighbor.Data.Cells) != len(u2.cells) {
 			t.Errorf("Expected data to be sent from top neighbor")
 		}
 	})
@@ -135,20 +136,20 @@ func TestNeighborData(t *testing.T) {
 		go u5.SendDataToNeighbors()
 		u.WaitForNeighborsData()
 
-		if len(u.TopNeighbor.Data.Data) != len(u2.cells) &&
-			u.TopNeighbor.Data.Data[u.GetIndex(10, 12)] != Alive {
+		if len(u.TopNeighbor.Data.Cells) != len(u2.cells) &&
+			u.TopNeighbor.Data.Cells[u.GetIndex(10, 12)] != Alive {
 			t.Errorf("Expected data to be sent from top neighbor")
 		}
-		if len(u.RightNeighbor.Data.Data) != len(u3.cells) &&
-			u.RightNeighbor.Data.Data[u.GetIndex(10, 12)] != Alive {
+		if len(u.RightNeighbor.Data.Cells) != len(u3.cells) &&
+			u.RightNeighbor.Data.Cells[u.GetIndex(10, 12)] != Alive {
 			t.Errorf("Expected data to be sent from right neighbor")
 		}
-		if len(u.BottomNeighbor.Data.Data) != len(u4.cells) &&
-			u.BottomNeighbor.Data.Data[u.GetIndex(10, 12)] != Alive {
+		if len(u.BottomNeighbor.Data.Cells) != len(u4.cells) &&
+			u.BottomNeighbor.Data.Cells[u.GetIndex(10, 12)] != Alive {
 			t.Errorf("Expected data to be sent from bottom neighbor")
 		}
-		if len(u.LeftNeighbor.Data.Data) != len(u5.cells) &&
-			u.LeftNeighbor.Data.Data[u.GetIndex(10, 12)] != Alive {
+		if len(u.LeftNeighbor.Data.Cells) != len(u5.cells) &&
+			u.LeftNeighbor.Data.Cells[u.GetIndex(10, 12)] != Alive {
 			t.Errorf("Expected data to be sent from left neighbor")
 		}
 	})
@@ -191,30 +192,34 @@ func TestMultitick(t *testing.T) {
 		u.SetBottomNeighbor(u4)
 		u.SetLeftNeighbor(u5)
 
-		go u2.MultiTick()
-		go u3.MultiTick()
-		go u4.MultiTick()
-		go u5.MultiTick()
-		u.MultiTick()
+		var wg sync.WaitGroup
+		callMultiTick(&wg, u)
+		callMultiTick(&wg, u2)
+		callMultiTick(&wg, u3)
+		callMultiTick(&wg, u4)
+		callMultiTick(&wg, u5)
+		wg.Wait()
 
-		if u.TopNeighbor.Data.Data[u.GetIndex(10, 12)] != u2.cells[u.GetIndex(10, 12)] {
+		if u.TopNeighbor.Data.Cells[u.GetIndex(10, 12)] != u2.cells[u.GetIndex(10, 12)] {
 			t.Errorf("Expected data to be sent from top neighbor")
 		}
-		if u.RightNeighbor.Data.Data[u.GetIndex(10, 12)] != u3.cells[u.GetIndex(10, 12)] {
+		if u.RightNeighbor.Data.Cells[u.GetIndex(10, 12)] != u3.cells[u.GetIndex(10, 12)] {
 			t.Errorf("Expected data to be sent from right neighbor")
 		}
-		if u.BottomNeighbor.Data.Data[u.GetIndex(10, 12)] != u3.cells[u.GetIndex(10, 12)] {
+		if u.BottomNeighbor.Data.Cells[u.GetIndex(10, 12)] != u3.cells[u.GetIndex(10, 12)] {
 			t.Errorf("Expected data to be sent from bottom neighbor")
 		}
-		if u.LeftNeighbor.Data.Data[u.GetIndex(10, 12)] != u4.cells[u.GetIndex(10, 12)] {
+		if u.LeftNeighbor.Data.Cells[u.GetIndex(10, 12)] != u4.cells[u.GetIndex(10, 12)] {
 			t.Errorf("Expected data to be sent from left neighbor")
 		}
 
-		go u2.MultiTick()
-		go u3.MultiTick()
-		go u4.MultiTick()
-		go u5.MultiTick()
-		u.MultiTick()
+		var wg2 sync.WaitGroup
+		callMultiTick(&wg2, u)
+		callMultiTick(&wg2, u2)
+		callMultiTick(&wg2, u3)
+		callMultiTick(&wg2, u4)
+		callMultiTick(&wg2, u5)
+		wg2.Wait()
 
 		testCell(t, u)
 		testCell(t, u2)
@@ -244,4 +249,12 @@ func testCell(t *testing.T, u *ParallelUniverse) {
 	if u.ParallelNeighbors(11, 13) != 3 {
 		t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.ParallelNeighbors(11, 13))
 	}
+}
+
+func callMultiTick(wg *sync.WaitGroup, u *ParallelUniverse) {
+	wg.Add(1)
+	go func() {
+		u.MultiTick()
+		wg.Done()
+	}()
 }
