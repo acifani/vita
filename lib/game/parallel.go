@@ -28,11 +28,14 @@ type ParallelUniverse struct {
 	BottomNeighbor *NeighborConnection
 	LeftNeighbor   *NeighborConnection
 	RightNeighbor  *NeighborConnection
+
+	sendBuffer []uint8
 }
 
 func NewParallelUniverse(height, width uint32) *ParallelUniverse {
 	p := &ParallelUniverse{
-		Universe: NewUniverse(height, width),
+		Universe:   NewUniverse(height, width),
+		sendBuffer: make([]uint8, height*width),
 	}
 	p.Rules = p.ParallelRules
 	return p
@@ -160,9 +163,9 @@ func (p *ParallelUniverse) SendDataToNeighbors() {
 	var wg sync.WaitGroup
 	data := NeighborData{
 		Generation: p.Generation,
-		Cells:      make([]uint8, len(p.cells)),
+		Cells:      p.sendBuffer,
 	}
-	copy(data.Cells, p.cells)
+	copy(p.sendBuffer, p.cells)
 
 	if p.TopNeighbor != nil {
 		wg.Add(1)
