@@ -10,11 +10,12 @@ const (
 )
 
 type Universe struct {
-	height   uint32
-	width    uint32
-	cells    []uint8
-	newCells []uint8
-	stable   bool
+	height     uint32
+	width      uint32
+	cells      []uint8
+	newCells   []uint8
+	stable     bool
+	Generation uint32
 
 	Rules func(cell uint8, row, column uint32) uint8
 }
@@ -85,6 +86,7 @@ func (u *Universe) Tick() {
 	}
 
 	u.stable = stable
+	u.Generation++
 	copy(u.cells, u.newCells)
 }
 
@@ -92,6 +94,7 @@ func (u *Universe) Reset() {
 	for i := range u.cells {
 		u.cells[i] = Dead
 	}
+	u.Generation = 0
 }
 
 func (u *Universe) Randomize(livePopulation int) {

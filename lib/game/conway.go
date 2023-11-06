@@ -44,6 +44,7 @@ func (u *Universe) MooreNeighbors(row, column uint32) uint8 {
 			neighborRow := (row + rowDiff) % u.height
 			neighborColumn := (column + colDiff) % u.width
 			neighborIdx := u.GetIndex(neighborRow, neighborColumn)
+
 			if u.Cell(neighborIdx) == Alive {
 				count++
 			}
