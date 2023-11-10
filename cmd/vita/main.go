@@ -76,16 +76,58 @@ func connectParallelUniverses(multi []*game.ParallelUniverse) {
 	for row := 0; row < *number; row++ {
 		for col := 0; col < *number; col++ {
 			switch {
+			// top right
 			case col == *number-1 && row == *number-1:
-				// do nothing
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetLeftNeighbor(multi[i-1])
+
+			// top left
+			case col == 0 && row == *number-1:
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetRightNeighbor(multi[i+1])
+
+			// bottom right
+			case col == *number-1 && row == 0:
+				multi[i].SetTopNeighbor(multi[*number+i])
+				multi[i].SetLeftNeighbor(multi[i-1])
+
+			// bottom left
+			case col == 0 && row == 0:
+				multi[i].SetTopNeighbor(multi[*number+i])
+				multi[i].SetRightNeighbor(multi[i+1])
+
+			// first column
+			case col == 0:
+				multi[i].SetTopNeighbor(multi[i+*number])
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetRightNeighbor(multi[i+1])
+
+			// first row
+			case row == 0:
+				multi[i].SetTopNeighbor(multi[i+*number])
+				multi[i].SetLeftNeighbor(multi[i-1])
+				multi[i].SetRightNeighbor(multi[i+1])
+
+			// last column
 			case col == *number-1:
-				multi[i].SetTopNeighbor(multi[*number+i])
+				multi[i].SetTopNeighbor(multi[i+*number])
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetLeftNeighbor(multi[i-1])
+
+			// last row
 			case row == *number-1:
-				multi[i].SetRightNeighbor(multi[*number+1])
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetLeftNeighbor(multi[i-1])
+				multi[i].SetRightNeighbor(multi[i+1])
+
+			// anyplace else
 			default:
-				multi[i].SetTopNeighbor(multi[*number+i])
-				multi[i].SetRightNeighbor(multi[*number+1])
+				multi[i].SetTopNeighbor(multi[i+*number])
+				multi[i].SetBottomNeighbor(multi[i-*number])
+				multi[i].SetLeftNeighbor(multi[i-1])
+				multi[i].SetRightNeighbor(multi[i+1])
 			}
+			i++
 		}
 	}
 }

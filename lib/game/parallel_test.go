@@ -85,6 +85,7 @@ func TestNeighborData(t *testing.T) {
 		u2.cells[u.GetIndex(11, 13)] = Alive
 
 		u.SetTopNeighbor(u2)
+		u2.SetBottomNeighbor(u)
 
 		u2.SendDataToNeighbors()
 		u.WaitForNeighborsData()
@@ -126,9 +127,13 @@ func TestNeighborData(t *testing.T) {
 		u5.cells[u.GetIndex(11, 13)] = Alive
 
 		u.SetTopNeighbor(u2)
+		u2.SetBottomNeighbor(u)
 		u.SetRightNeighbor(u3)
+		u3.SetLeftNeighbor(u)
 		u.SetBottomNeighbor(u4)
+		u4.SetTopNeighbor(u)
 		u.SetLeftNeighbor(u5)
+		u5.SetRightNeighbor(u)
 
 		go u2.SendDataToNeighbors()
 		go u3.SendDataToNeighbors()
@@ -188,9 +193,13 @@ func TestMultitick(t *testing.T) {
 		u5.cells[u.GetIndex(11, 13)] = Alive
 
 		u.SetTopNeighbor(u2)
+		u2.SetBottomNeighbor(u)
 		u.SetRightNeighbor(u3)
+		u3.SetLeftNeighbor(u)
 		u.SetBottomNeighbor(u4)
+		u4.SetTopNeighbor(u)
 		u.SetLeftNeighbor(u5)
+		u5.SetRightNeighbor(u)
 
 		var wg sync.WaitGroup
 		callMultiTick(&wg, u)

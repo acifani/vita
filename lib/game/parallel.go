@@ -203,50 +203,42 @@ func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) {
 	if p.TopNeighbor == nil {
 		p.TopNeighbor = NewNeighborConnection()
 	}
-
 	if n.BottomNeighbor == nil {
 		n.BottomNeighbor = NewNeighborConnection()
 	}
 
 	p.TopNeighbor.ReceiveCh = n.BottomNeighbor.SendCh
-	n.BottomNeighbor.ReceiveCh = p.TopNeighbor.SendCh
 }
 
 func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) {
 	if p.BottomNeighbor == nil {
 		p.BottomNeighbor = NewNeighborConnection()
 	}
-
 	if n.TopNeighbor == nil {
 		n.TopNeighbor = NewNeighborConnection()
 	}
 
 	p.BottomNeighbor.ReceiveCh = n.TopNeighbor.SendCh
-	n.TopNeighbor.ReceiveCh = p.BottomNeighbor.SendCh
 }
 
 func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) {
 	if p.LeftNeighbor == nil {
 		p.LeftNeighbor = NewNeighborConnection()
 	}
-
 	if n.RightNeighbor == nil {
 		n.RightNeighbor = NewNeighborConnection()
 	}
 
 	p.LeftNeighbor.ReceiveCh = n.RightNeighbor.SendCh
-	n.RightNeighbor.ReceiveCh = p.LeftNeighbor.SendCh
 }
 
 func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) {
 	if p.RightNeighbor == nil {
 		p.RightNeighbor = NewNeighborConnection()
 	}
-
 	if n.LeftNeighbor == nil {
 		n.LeftNeighbor = NewNeighborConnection()
 	}
 
 	p.RightNeighbor.ReceiveCh = n.LeftNeighbor.SendCh
-	n.LeftNeighbor.ReceiveCh = p.RightNeighbor.SendCh
 }
