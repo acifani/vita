@@ -199,7 +199,7 @@ func (p *ParallelUniverse) SendDataToNeighbors() {
 	wg.Wait()
 }
 
-func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) error {
 	if p.TopNeighbor == nil {
 		p.TopNeighbor = NewNeighborConnection()
 	}
@@ -208,9 +208,10 @@ func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) {
 	}
 
 	p.TopNeighbor.ReceiveCh = n.BottomNeighbor.SendCh
+	return nil
 }
 
-func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) error {
 	if p.BottomNeighbor == nil {
 		p.BottomNeighbor = NewNeighborConnection()
 	}
@@ -219,9 +220,11 @@ func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) {
 	}
 
 	p.BottomNeighbor.ReceiveCh = n.TopNeighbor.SendCh
+	return nil
+
 }
 
-func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) error {
 	if p.LeftNeighbor == nil {
 		p.LeftNeighbor = NewNeighborConnection()
 	}
@@ -230,9 +233,10 @@ func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) {
 	}
 
 	p.LeftNeighbor.ReceiveCh = n.RightNeighbor.SendCh
+	return nil
 }
 
-func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) error {
 	if p.RightNeighbor == nil {
 		p.RightNeighbor = NewNeighborConnection()
 	}
@@ -241,4 +245,5 @@ func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) {
 	}
 
 	p.RightNeighbor.ReceiveCh = n.LeftNeighbor.SendCh
+	return nil
 }
