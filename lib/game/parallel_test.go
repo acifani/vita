@@ -38,12 +38,12 @@ func TestParallelUniverse(t *testing.T) {
 			t.Errorf("Expected universe to not be stable")
 		}
 
-		if u.ParallelNeighbors(0, 0) != 0 {
-			t.Errorf("Expected cell %d to have 0 alive neighbors, got %d", u.GetIndex(0, 0), u.ParallelNeighbors(0, 0))
+		if u.Neighbors(0, 0) != 0 {
+			t.Errorf("Expected cell %d to have 0 alive neighbors, got %d", u.GetIndex(0, 0), u.Neighbors(0, 0))
 		}
 
-		if u.ParallelNeighbors(11, 12) != 6 {
-			t.Errorf("Expected cell %d to have 6 alive neighbors, got %d", u.GetIndex(11, 12), u.ParallelNeighbors(11, 12))
+		if u.Neighbors(11, 12) != 6 {
+			t.Errorf("Expected cell %d to have 6 alive neighbors, got %d", u.GetIndex(11, 12), u.Neighbors(11, 12))
 		}
 
 		u.Tick()
@@ -56,16 +56,16 @@ func TestParallelUniverse(t *testing.T) {
 			t.Errorf("Expected cell %d to be dead, got %d", u.GetIndex(11, 12), u.Cell(u.GetIndex(11, 12)))
 		}
 
-		if u.ParallelNeighbors(11, 12) != 5 {
-			t.Errorf("Expected cell %d to have 5 alive neighbors, got %d", u.GetIndex(11, 12), u.ParallelNeighbors(11, 12))
+		if u.Neighbors(11, 12) != 5 {
+			t.Errorf("Expected cell %d to have 5 alive neighbors, got %d", u.GetIndex(11, 12), u.Neighbors(11, 12))
 		}
 
 		if u.Cell(u.GetIndex(11, 13)) != Dead {
 			t.Errorf("Expected cell %d to be dead, got %d", u.GetIndex(11, 12), u.Cell(u.GetIndex(11, 12)))
 		}
 
-		if u.ParallelNeighbors(11, 13) != 3 {
-			t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.ParallelNeighbors(11, 13))
+		if u.Neighbors(11, 13) != 3 {
+			t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.Neighbors(11, 13))
 		}
 	})
 }
@@ -247,16 +247,16 @@ func testCell(t *testing.T, u *ParallelUniverse) {
 		t.Errorf("Expected cell %d to be dead, got %d", u.GetIndex(11, 12), u.Cell(u.GetIndex(11, 12)))
 	}
 
-	if u.ParallelNeighbors(11, 12) != 5 {
-		t.Errorf("Expected cell %d to have 5 alive neighbors, got %d", u.GetIndex(11, 12), u.ParallelNeighbors(11, 12))
+	if u.Neighbors(11, 12) != 5 {
+		t.Errorf("Expected cell %d to have 5 alive neighbors, got %d", u.GetIndex(11, 12), u.Neighbors(11, 12))
 	}
 
 	if u.Cell(u.GetIndex(11, 13)) != Dead {
 		t.Errorf("Expected cell %d to be dead, got %d", u.GetIndex(11, 12), u.Cell(u.GetIndex(11, 12)))
 	}
 
-	if u.ParallelNeighbors(11, 13) != 3 {
-		t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.ParallelNeighbors(11, 13))
+	if u.Neighbors(11, 13) != 3 {
+		t.Errorf("Expected cell %d to have 3 alive neighbors, got %d", u.GetIndex(11, 13), u.Neighbors(11, 13))
 	}
 }
 

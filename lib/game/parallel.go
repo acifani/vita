@@ -37,18 +37,18 @@ func NewParallelUniverse(height, width uint32) *ParallelUniverse {
 		Universe:   NewUniverse(height, width),
 		sendBuffer: make([]uint8, height*width),
 	}
-	p.Rules = p.ParallelRules
+	p.Rules = p.rules
 	return p
 }
 
-func (p *ParallelUniverse) ParallelRules(cell uint8, row, column uint32) uint8 {
-	return RuleB3S23(cell, p.ParallelNeighbors(row, column))
+func (p *ParallelUniverse) rules(cell uint8, row, column uint32) uint8 {
+	return RuleB3S23(cell, p.Neighbors(row, column))
 }
 
-// ParallelNeighbors returns the number of alive neighbors for a given cell.
-// It uses the Moore neighborhood, which includes the eight cells surrounding
-// the given cell, but also extended to adjoining neighbor Universes.
-func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
+// The ParallelUniverse Neighbors function returns the number of alive neighbors
+// for a given cell. It uses the Moore neighborhood, which includes the eight cells
+// surrounding the given cell, but also extended to adjoining neighbor Universes.
+func (p *ParallelUniverse) Neighbors(row, column uint32) uint8 {
 	count := uint8(0)
 	r, c := int32(row), int32(column)
 	for _, neighborRow := range []int32{r - 1, r, r + 1} {
