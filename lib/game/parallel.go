@@ -34,18 +34,18 @@ func NewParallelUniverse(height, width uint32) *ParallelUniverse {
 	p := &ParallelUniverse{
 		Universe: NewUniverse(height, width),
 	}
-	p.Rules = p.ParallelRules
+	p.Rules = p.rules
 	return p
 }
 
-func (p *ParallelUniverse) ParallelRules(cell uint8, row, column uint32) uint8 {
-	return RuleB3S23(cell, p.ParallelNeighbors(row, column))
+func (p *ParallelUniverse) rules(cell uint8, row, column uint32) uint8 {
+	return RuleB3S23(cell, p.Neighbors(row, column))
 }
 
-// ParallelNeighbors returns the number of alive neighbors for a given cell.
-// It uses the Moore neighborhood, which includes the eight cells surrounding
-// the given cell, but also extended to adjoining neighbor Universes.
-func (p *ParallelUniverse) ParallelNeighbors(row, column uint32) uint8 {
+// The ParallelUniverse Neighbors function returns the number of alive neighbors
+// for a given cell. It uses the Moore neighborhood, which includes the eight cells
+// surrounding the given cell, but also extended to adjoining neighbor Universes.
+func (p *ParallelUniverse) Neighbors(row, column uint32) uint8 {
 	count := uint8(0)
 	r, c := int32(row), int32(column)
 	for _, neighborRow := range []int32{r - 1, r, r + 1} {
@@ -196,54 +196,51 @@ func (p *ParallelUniverse) SendDataToNeighbors() {
 	wg.Wait()
 }
 
-func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetTopNeighbor(n *ParallelUniverse) error {
 	if p.TopNeighbor == nil {
 		p.TopNeighbor = NewNeighborConnection()
 	}
-
 	if n.BottomNeighbor == nil {
 		n.BottomNeighbor = NewNeighborConnection()
 	}
 
 	p.TopNeighbor.ReceiveCh = n.BottomNeighbor.SendCh
-	n.BottomNeighbor.ReceiveCh = p.TopNeighbor.SendCh
+	return nil
 }
 
-func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetBottomNeighbor(n *ParallelUniverse) error {
 	if p.BottomNeighbor == nil {
 		p.BottomNeighbor = NewNeighborConnection()
 	}
-
 	if n.TopNeighbor == nil {
 		n.TopNeighbor = NewNeighborConnection()
 	}
 
 	p.BottomNeighbor.ReceiveCh = n.TopNeighbor.SendCh
-	n.TopNeighbor.ReceiveCh = p.BottomNeighbor.SendCh
+	return nil
+
 }
 
-func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetLeftNeighbor(n *ParallelUniverse) error {
 	if p.LeftNeighbor == nil {
 		p.LeftNeighbor = NewNeighborConnection()
 	}
-
 	if n.RightNeighbor == nil {
 		n.RightNeighbor = NewNeighborConnection()
 	}
 
 	p.LeftNeighbor.ReceiveCh = n.RightNeighbor.SendCh
-	n.RightNeighbor.ReceiveCh = p.LeftNeighbor.SendCh
+	return nil
 }
 
-func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) {
+func (p *ParallelUniverse) SetRightNeighbor(n *ParallelUniverse) error {
 	if p.RightNeighbor == nil {
 		p.RightNeighbor = NewNeighborConnection()
 	}
-
 	if n.LeftNeighbor == nil {
 		n.LeftNeighbor = NewNeighborConnection()
 	}
 
 	p.RightNeighbor.ReceiveCh = n.LeftNeighbor.SendCh
-	n.LeftNeighbor.ReceiveCh = p.RightNeighbor.SendCh
+	return nil
 }
