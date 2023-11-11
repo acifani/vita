@@ -134,39 +134,39 @@ func (d *DistributedUniverse) Neighbors(row, column uint32) uint8 {
 	return count
 }
 
-func (d *DistributedUniverse) SetTopNeighbor(n *DistributedUniverse) error {
-	if d.ID == n.ID {
+func (d *DistributedUniverse) SetTopNeighbor(id string) error {
+	if d.ID == id {
 		return errInvalidID
 	}
 
-	d.TopID = n.ID
+	d.TopID = id
 	return nil
 }
 
-func (d *DistributedUniverse) SetBottomNeighbor(n *DistributedUniverse) error {
-	if d.ID == n.ID {
+func (d *DistributedUniverse) SetBottomNeighbor(id string) error {
+	if d.ID == id {
 		return errInvalidID
 	}
 
-	d.BottomID = n.ID
+	d.BottomID = id
 	return nil
 }
 
-func (d *DistributedUniverse) SetLeftNeighbor(n *DistributedUniverse) error {
-	if d.ID == n.ID {
+func (d *DistributedUniverse) SetLeftNeighbor(id string) error {
+	if d.ID == id {
 		return errInvalidID
 	}
 
-	d.LeftID = n.ID
+	d.LeftID = id
 	return nil
 }
 
-func (d *DistributedUniverse) SetRightNeighbor(n *DistributedUniverse) error {
-	if d.ID == n.ID {
+func (d *DistributedUniverse) SetRightNeighbor(id string) error {
+	if d.ID == id {
 		return errInvalidID
 	}
 
-	d.RightID = n.ID
+	d.RightID = id
 	return nil
 }
 

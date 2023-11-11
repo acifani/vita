@@ -117,14 +117,14 @@ func TestDistributedUniverseTick(t *testing.T) {
 		u5.cells[u.GetIndex(12, 12)] = Alive
 		u5.cells[u.GetIndex(11, 13)] = Alive
 
-		u.SetTopNeighbor(u2)
-		u2.SetBottomNeighbor(u)
-		u.SetRightNeighbor(u3)
-		u3.SetLeftNeighbor(u)
-		u.SetBottomNeighbor(u4)
-		u4.SetTopNeighbor(u)
-		u.SetLeftNeighbor(u5)
-		u5.SetRightNeighbor(u)
+		u.SetTopNeighbor(u2.ID)
+		u2.SetBottomNeighbor(u.ID)
+		u.SetRightNeighbor(u3.ID)
+		u3.SetLeftNeighbor(u.ID)
+		u.SetBottomNeighbor(u4.ID)
+		u4.SetTopNeighbor(u.ID)
+		u.SetLeftNeighbor(u5.ID)
+		u5.SetRightNeighbor(u.ID)
 
 		u.Tick()
 		u2.Tick()
