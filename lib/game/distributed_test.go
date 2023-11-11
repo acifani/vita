@@ -6,7 +6,7 @@ import (
 
 func TestDistributedUniverse(t *testing.T) {
 	t.Run("NewDisributedUniverse", func(t *testing.T) {
-		u := NewDistributedUniverse(24, 32)
+		u := NewDistributedUniverse(GenerateKey(), 24, 32)
 
 		if u.Height() != 24 {
 			t.Errorf("Expected height to be 24, got %d", u.Height())
@@ -25,7 +25,7 @@ func TestDistributedUniverse(t *testing.T) {
 	})
 
 	t.Run("TickWithoutNeighbors", func(t *testing.T) {
-		u := NewDistributedUniverse(24, 32)
+		u := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u.cells[u.GetIndex(10, 12)] = Alive
 		u.cells[u.GetIndex(11, 12)] = Alive
 		u.cells[u.GetIndex(12, 12)] = Alive
@@ -73,8 +73,7 @@ func TestDistributedUniverseTick(t *testing.T) {
 	t.Run("FourNeighbors", func(t *testing.T) {
 		store := NewTestStore()
 
-		u := NewDistributedUniverse(24, 32)
-		u.ID = "11111"
+		u := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u.GetNeighbor = store.Get
 		store.Set(u.ID, u)
 		u.cells[u.GetIndex(10, 12)] = Alive
@@ -82,8 +81,7 @@ func TestDistributedUniverseTick(t *testing.T) {
 		u.cells[u.GetIndex(12, 12)] = Alive
 		u.cells[u.GetIndex(11, 13)] = Alive
 
-		u2 := NewDistributedUniverse(24, 32)
-		u2.ID = "22222"
+		u2 := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u2.GetNeighbor = store.Get
 		store.Set(u2.ID, u2)
 		u2.cells[u.GetIndex(10, 12)] = Alive
@@ -91,8 +89,7 @@ func TestDistributedUniverseTick(t *testing.T) {
 		u2.cells[u.GetIndex(12, 12)] = Alive
 		u2.cells[u.GetIndex(11, 13)] = Alive
 
-		u3 := NewDistributedUniverse(24, 32)
-		u3.ID = "33333"
+		u3 := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u3.GetNeighbor = store.Get
 		store.Set(u3.ID, u3)
 		u3.cells[u.GetIndex(10, 12)] = Alive
@@ -100,8 +97,7 @@ func TestDistributedUniverseTick(t *testing.T) {
 		u3.cells[u.GetIndex(12, 12)] = Alive
 		u3.cells[u.GetIndex(11, 13)] = Alive
 
-		u4 := NewDistributedUniverse(24, 32)
-		u4.ID = "44444"
+		u4 := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u4.GetNeighbor = store.Get
 		store.Set(u4.ID, u4)
 		u4.cells[u.GetIndex(10, 12)] = Alive
@@ -109,8 +105,7 @@ func TestDistributedUniverseTick(t *testing.T) {
 		u4.cells[u.GetIndex(12, 12)] = Alive
 		u4.cells[u.GetIndex(11, 13)] = Alive
 
-		u5 := NewDistributedUniverse(24, 32)
-		u5.ID = "55555"
+		u5 := NewDistributedUniverse(GenerateKey(), 24, 32)
 		u5.GetNeighbor = store.Get
 		store.Set(u5.ID, u5)
 		u5.cells[u.GetIndex(10, 12)] = Alive

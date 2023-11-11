@@ -1,5 +1,17 @@
 package game
 
+import (
+	"crypto/rand"
+	"encoding/hex"
+	"strings"
+)
+
+const (
+	IDLength = 32
+)
+
+var NullID = strings.Repeat("0", IDLength)
+
 type DistributedUniverse struct {
 	*Universe
 
@@ -18,10 +30,16 @@ type DistributedUniverse struct {
 	GetNeighbor func(id string) *DistributedUniverse
 }
 
-func NewDistributedUniverse(height, width uint32) *DistributedUniverse {
+func NewDistributedUniverse(id string, height, width uint32) *DistributedUniverse {
 	d := &DistributedUniverse{
+		ID:       id,
+		TopID:    NullID,
+		BottomID: NullID,
+		LeftID:   NullID,
+		RightID:  NullID,
 		Universe: NewUniverse(height, width),
 	}
+
 	d.Rules = d.rules
 	d.GetNeighbor = d.getEmptyUniverse
 	return d
@@ -53,7 +71,7 @@ func (d *DistributedUniverse) Neighbors(row, column uint32) uint8 {
 				// check the universe below and to the right for one pixel?
 			case neighborRow < 0:
 				// check the universe above
-				if d.TopID == "" {
+				if d.TopID == NullID {
 					continue
 				}
 				if d.TopNeighbor == nil {
@@ -66,7 +84,7 @@ func (d *DistributedUniverse) Neighbors(row, column uint32) uint8 {
 				}
 			case neighborRow >= int32(d.height):
 				// check the universe below
-				if d.BottomID == "" {
+				if d.BottomID == NullID {
 					continue
 				}
 				if d.BottomNeighbor == nil {
@@ -79,7 +97,7 @@ func (d *DistributedUniverse) Neighbors(row, column uint32) uint8 {
 				}
 			case neighborColumn < 0:
 				// check the universe to the left
-				if d.LeftID == "" {
+				if d.LeftID == NullID {
 					continue
 				}
 				if d.LeftNeighbor == nil {
@@ -92,7 +110,7 @@ func (d *DistributedUniverse) Neighbors(row, column uint32) uint8 {
 				}
 			case neighborColumn >= int32(d.width):
 				// check the universe to the right
-				if d.RightID == "" {
+				if d.RightID == NullID {
 					continue
 				}
 				if d.RightNeighbor == nil {
@@ -153,7 +171,44 @@ func (d *DistributedUniverse) SetRightNeighbor(n *DistributedUniverse) error {
 }
 
 func (d *DistributedUniverse) getEmptyUniverse(id string) *DistributedUniverse {
-	u := NewDistributedUniverse(d.height, d.width)
-	u.ID = id
+	u := NewDistributedUniverse(id, d.height, d.width)
 	return u
+}
+
+func (d *DistributedUniverse) Read(p []byte) (n int, err error) {
+	if len(p) != IDLength*5+len(d.cells) {
+		return 0, errInvalidLength
+	}
+
+	copy(p[:32], []byte(d.ID))
+	copy(p[32:64], []byte(d.TopID))
+	copy(p[64:96], []byte(d.BottomID))
+	copy(p[96:128], []byte(d.LeftID))
+	copy(p[128:160], []byte(d.RightID))
+	copy(p[160:], d.cells)
+
+	return len(p), nil
+}
+
+func (d *DistributedUniverse) Write(p []byte) (n int, err error) {
+	if len(p) != IDLength*5+len(d.cells) {
+		return 0, errInvalidLength
+	}
+
+	d.ID = string(p[:32])
+	d.TopID = string(p[32:64])
+	d.BottomID = string(p[64:96])
+	d.LeftID = string(p[96:128])
+	d.RightID = string(p[128:160])
+	copy(d.cells, p[160:])
+
+	return len(p), nil
+}
+
+// GenerateKey returns a string of length 32, since that
+// is what you get from 16 bytes encoded as a hex string.
+func GenerateKey() string {
+	var result [16]byte
+	rand.Read(result[:])
+	return hex.EncodeToString(result[:])
 }
