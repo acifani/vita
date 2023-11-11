@@ -205,6 +205,13 @@ func (d *DistributedUniverse) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
+func (d *DistributedUniverse) Bytes() []byte {
+	buf := make([]byte, IDLength*5+len(d.cells))
+	d.Read(buf)
+
+	return buf
+}
+
 // GenerateKey returns a string of length 32, since that
 // is what you get from 16 bytes encoded as a hex string.
 func GenerateKey() string {

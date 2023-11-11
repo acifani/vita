@@ -5,7 +5,7 @@ import (
 )
 
 func TestDistributedUniverse(t *testing.T) {
-	t.Run("NewDisributedUniverse", func(t *testing.T) {
+	t.Run("NewDistributedUniverse", func(t *testing.T) {
 		u := NewDistributedUniverse(GenerateKey(), 24, 32)
 
 		if u.Height() != 24 {
@@ -21,6 +21,10 @@ func TestDistributedUniverse(t *testing.T) {
 			if u.Cell(i) != Dead {
 				t.Errorf("Expected cell %d to be dead, got %d", i, u.Cell(uint32(i)))
 			}
+		}
+
+		if len(u.Bytes()) != 24*32+5*IDLength {
+			t.Errorf("Expected Bytes to be %d, got %d", 24*32+5*IDLength, len(u.Bytes()))
 		}
 	})
 
