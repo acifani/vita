@@ -17,7 +17,7 @@ type Universe struct {
 	stable     bool
 	Generation uint32
 
-	Rules func(cell uint8, row, column uint32) uint8
+	Rules func(cell uint8, row, column uint32) uint8 `json:"-"`
 }
 
 func NewUniverse(height, width uint32) *Universe {

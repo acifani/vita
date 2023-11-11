@@ -17,17 +17,17 @@ type DistributedUniverse struct {
 
 	ID             string
 	TopID          string
-	TopNeighbor    *DistributedUniverse
+	TopNeighbor    *DistributedUniverse `json:"-"`
 	BottomID       string
-	BottomNeighbor *DistributedUniverse
+	BottomNeighbor *DistributedUniverse `json:"-"`
 	LeftID         string
-	LeftNeighbor   *DistributedUniverse
+	LeftNeighbor   *DistributedUniverse `json:"-"`
 	RightID        string
-	RightNeighbor  *DistributedUniverse
+	RightNeighbor  *DistributedUniverse `json:"-"`
 
 	// set the GetNeighbor function with implementation for
 	// the distributed environment.
-	GetNeighbor func(id string) *DistributedUniverse
+	GetNeighbor func(id string) *DistributedUniverse `json:"-"`
 }
 
 func NewDistributedUniverse(id string, height, width uint32) *DistributedUniverse {
