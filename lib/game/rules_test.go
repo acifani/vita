@@ -98,4 +98,88 @@ func TestConwayRule(t *testing.T) {
 			t.Errorf("Expected cell to be dead, got %d", RuleB3S23(Dead, 4))
 		}
 	})
+
+	t.Run("RuleB3678S34678 when cell is Alive", func(t *testing.T) {
+		if RuleB3678S34678(Alive, 0) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Alive, 0))
+		}
+
+		if RuleB3678S34678(Alive, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Alive, 1))
+		}
+
+		if RuleB3678S34678(Alive, 2) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 2))
+		}
+
+		if RuleB3678S34678(Alive, 3) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Alive, 3))
+		}
+
+		if RuleB3678S34678(Alive, 4) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Alive, 4))
+		}
+
+		if RuleB3678S34678(Alive, 5) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Alive, 5))
+		}
+
+		if RuleB3678S34678(Alive, 6) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Alive, 6))
+		}
+
+		if RuleB3678S34678(Alive, 7) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Alive, 7))
+		}
+
+		if RuleB3678S34678(Alive, 8) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Alive, 8))
+		}
+
+		if RuleB3678S34678(Alive, 9) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Alive, 9))
+		}
+	})
+
+	t.Run("RuleB3678S34678 when cell is Dead", func(t *testing.T) {
+		if RuleB3678S34678(Dead, 0) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 0))
+		}
+
+		if RuleB3678S34678(Dead, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 1))
+		}
+
+		if RuleB3678S34678(Dead, 2) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 2))
+		}
+
+		if RuleB3678S34678(Dead, 3) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Dead, 3))
+		}
+
+		if RuleB3678S34678(Dead, 4) != Dead {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Dead, 4))
+		}
+
+		if RuleB3678S34678(Dead, 5) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 5))
+		}
+
+		if RuleB3678S34678(Dead, 6) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Dead, 6))
+		}
+
+		if RuleB3678S34678(Dead, 7) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Dead, 7))
+		}
+
+		if RuleB3678S34678(Dead, 8) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", RuleB3678S34678(Dead, 8))
+		}
+
+		if RuleB3678S34678(Dead, 9) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", RuleB3678S34678(Dead, 9))
+		}
+	})
 }

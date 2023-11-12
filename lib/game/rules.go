@@ -10,7 +10,7 @@ func (u *Universe) ConwayRulesWrap(cell uint8, row, column uint32) uint8 {
 	return RuleB3S23(cell, u.MooreNeighborsWrap(row, column))
 }
 
-// RuleB3S23 implements the B3/S23 ruleset:
+// RuleB3S23 implements the B3/S23 rules:
 // https://www.conwaylife.com/wiki/Conway%27s_Game_of_Life#Rules
 func RuleB3S23(cell uint8, liveNeighbors uint8) uint8 {
 	switch {
@@ -31,20 +31,50 @@ func RuleB3S23(cell uint8, liveNeighbors uint8) uint8 {
 	}
 }
 
-// RuleB34S23 implements the B34/S23 ruleset:
-// https://www.conwaylife.com/wiki/Conway%27s_Game_of_Life#Rules
-func RuleB34S23(cell uint8, liveNeighbors uint8) uint8 {
+// SeedsRules implements the Seeds rules.
+// See https://conwaylife.com/wiki/OCA:Seeds
+func (u *Universe) SeedsRules(cell uint8, row, column uint32) uint8 {
+	return RuleB2S(cell, u.MooreNeighbors(row, column))
+}
+
+// RuleB2S implements the B2S rules:
+// https://conwaylife.com/wiki/OCA:Seeds
+func RuleB2S(cell uint8, liveNeighbors uint8) uint8 {
 	switch {
-	case cell == Dead && (liveNeighbors == 3 || liveNeighbors == 4):
-		// Birth - any dead cell with three or four live neighbours 
+	case cell == Dead && (liveNeighbors == 2):
+		// Birth - any dead cell with two live neighbours
 		// becomes a live cell as if by reproduction.
 		return Alive
-	case cell == Alive && (liveNeighbors == 2 || liveNeighbors == 3):
-		// Survival - any live cell with two or three live neighbours
+	case cell == Alive:
+		// Death - any live cell dies.
+		return Dead
+	default:
+		return cell
+	}
+}
+
+// DayAndNightRules implements the Day And Night rules.
+// See https://conwaylife.com/wiki/OCA:Day_%26_Night
+func (u *Universe) DayAndNightRules(cell uint8, row, column uint32) uint8 {
+	return RuleB3678S34678(cell, u.MooreNeighbors(row, column))
+}
+
+// RuleB3678S34678 implements the B3678/S34678 rules:
+// https://conwaylife.com/wiki/OCA:Day_%26_Night
+func RuleB3678S34678(cell uint8, liveNeighbors uint8) uint8 {
+	switch {
+	case cell == Dead && (liveNeighbors == 3 || liveNeighbors == 6 ||
+		liveNeighbors == 7 || liveNeighbors == 8):
+		// Birth - any dead cell with 3, 6, 7, or 8 live neighbours
+		// becomes a live cell as if by reproduction.
+		return Alive
+	case cell == Alive && (liveNeighbors == 3 || liveNeighbors == 4 ||
+		liveNeighbors == 6 || liveNeighbors == 7 || liveNeighbors == 8):
+		// Survival - any live cell with 3, 4, 6, 7, or 8 live neighbours
 		// lives on to the next generation.
 		return Alive
-	case cell == Alive && (liveNeighbors < 2 || liveNeighbors > 3):
-		// Death - any live cell with less than two or more than three
+	case cell == Alive && (liveNeighbors < 3 || liveNeighbors == 5 || liveNeighbors > 8):
+		// Death - any live cell with less than three, five, or more than eight
 		// live neighbours dies, as if by underpopulation/overpopulation.
 		return Dead
 	default:
