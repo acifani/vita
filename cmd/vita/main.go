@@ -14,6 +14,7 @@ var (
 	generations = flag.Int("gens", 3, "how many generations to run the universe")
 	population  = flag.Int("pop", 45, "initial population percent of the universe")
 	number      = flag.Int("n", 1, "number of universes to run in parallel")
+	rules       = flag.String("rules", "conway", "rules to use for the universe")
 )
 
 func main() {
@@ -32,6 +33,17 @@ func main() {
 
 func runSingleUniverse() {
 	universe := game.NewUniverse(uint32(*height), uint32(*width))
+	switch *rules {
+	case "dayandnight":
+		universe.Rules = game.DayAndNightRules
+	case "seeds":
+		universe.Rules = game.SeedsRules
+	case "wrap":
+		universe.Rules = game.ConwayRulesWrap
+	default:
+		// just use conway
+	}
+
 	universe.Randomize(*population)
 
 	for i := 0; i < *generations; i++ {
@@ -63,6 +75,15 @@ func createParallelUniverses() []*game.ParallelUniverse {
 	for row := 0; row < *number; row++ {
 		for col := 0; col < *number; col++ {
 			u := game.NewParallelUniverse(uint32(*height), uint32(*width))
+			switch *rules {
+			case "dayandnight":
+				u.Rules = game.DayAndNightRules
+			case "seeds":
+				u.Rules = game.SeedsRules
+			default:
+				// just use conway
+			}
+
 			u.Randomize(*population)
 			multi = append(multi, u)
 		}
