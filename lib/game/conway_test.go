@@ -30,6 +30,31 @@ func TestConwayRule(t *testing.T) {
 		}
 	})
 
+	t.Run("MooreNeighborsWrap", func(t *testing.T) {
+		u := NewUniverse(32, 32)
+
+		idx := u.GetIndex(12, 12)
+		u.cells[idx] = Alive
+		if u.Cell(idx) != Alive {
+			t.Errorf("Expected cell %d to be alive, got %d", idx, u.Cell(idx))
+		}
+
+		if u.MooreNeighborsWrap(0, 0) != 0 {
+			t.Errorf("Expected cell %d to have 0 alive neighbors, got %d", 0, u.MooreNeighborsWrap(0, 0))
+		}
+
+		if u.MooreNeighborsWrap(11, 12) != 1 {
+			t.Errorf("Expected cell %d to have 1 alive neighbors, got %d", idx, u.MooreNeighborsWrap(11, 12))
+		}
+
+		idx = u.GetIndex(10, 12)
+		u.cells[idx] = Alive
+
+		if u.MooreNeighborsWrap(11, 12) != 2 {
+			t.Errorf("Expected cell %d to have 2 alive neighbors, got %d", idx, u.MooreNeighborsWrap(11, 12))
+		}
+	})
+
 	t.Run("RuleB3S23 when cell is Alive", func(t *testing.T) {
 		if RuleB3S23(Alive, 0) != Dead {
 			t.Errorf("Expected cell to be dead, got %d", RuleB3S23(Alive, 0))
