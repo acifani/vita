@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/acifani/vita/lib/game"
@@ -15,6 +16,8 @@ var (
 	population  = flag.Int("pop", 45, "initial population percent of the universe")
 	number      = flag.Int("n", 1, "number of universes to run in parallel")
 	rules       = flag.String("rules", "conway", "rules to use for the universe")
+	b           = flag.String("B", "3", "born")
+	s           = flag.String("S", "23", "survive")
 )
 
 func main() {
@@ -35,11 +38,13 @@ func runSingleUniverse() {
 	universe := game.NewUniverse(uint32(*height), uint32(*width))
 	switch *rules {
 	case "dayandnight":
-		universe.Rules = game.DayAndNightRules
+		universe.Rules = universe.DayAndNightRules
 	case "seeds":
-		universe.Rules = game.SeedsRules
+		universe.Rules = universe.SeedsRules
 	case "wrap":
-		universe.Rules = game.ConwayRulesWrap
+		universe.Rules = universe.ConwayRulesWrap
+	case "custom":
+		universe.Rules = universe.NewLifeLikeRules(convertStringToUint8(*b), convertStringToUint8(*s), true)
 	default:
 		// just use conway
 	}
@@ -76,10 +81,10 @@ func createParallelUniverses() []*game.ParallelUniverse {
 		for col := 0; col < *number; col++ {
 			u := game.NewParallelUniverse(uint32(*height), uint32(*width))
 			switch *rules {
-			case "dayandnight":
-				u.Rules = game.DayAndNightRules
-			case "seeds":
-				u.Rules = game.SeedsRules
+			// case "dayandnight":
+			// 	u.Rules = game.DayAndNightRules
+			// case "seeds":
+			// 	u.Rules = game.SeedsRules
 			default:
 				// just use conway
 			}
@@ -159,4 +164,17 @@ func callMultiTick(wg *sync.WaitGroup, u *game.ParallelUniverse) {
 		u.MultiTick()
 		wg.Done()
 	}()
+}
+
+func convertStringToUint8(input string) []uint8 {
+	output := make([]uint8, len(input))
+	for i, c := range input {
+		n, err := strconv.Atoi(string(c))
+		if err != nil {
+			panic(err)
+		}
+		output[i] = uint8(n)
+	}
+
+	return output
 }

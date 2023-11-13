@@ -1,5 +1,41 @@
 package game
 
+func (u *Universe) NewLifeLikeRules(B, S []uint8, wraps bool) func(cell uint8, row, column uint32) uint8 {
+	rule := NewRule(B, S)
+	return func(cell uint8, row, column uint32) uint8 {
+		var neighbors uint8
+		if wraps {
+			neighbors = u.MooreNeighbors(row, column)
+		} else {
+			neighbors = u.MooreNeighborsWrap(row, column)
+		}
+		return rule(cell, neighbors)
+	}
+}
+
+func NewRule(B, S []uint8) func(cell uint8, liveNeighbors uint8) uint8 {
+	return func(cell uint8, liveNeighbors uint8) uint8 {
+		if cell == Dead && contains(B, liveNeighbors) {
+			return Alive
+		}
+
+		if cell == Alive && contains(S, liveNeighbors) {
+			return Alive
+		}
+
+		return Dead
+	}
+}
+
+func contains(slice []uint8, candidate uint8) bool {
+	for _, element := range slice {
+		if element == candidate {
+			return true
+		}
+	}
+	return false
+}
+
 // ConwayRules implements the classic Game of Life rules.
 func (u *Universe) ConwayRules(cell uint8, row, column uint32) uint8 {
 	return RuleB3S23(cell, u.MooreNeighbors(row, column))
