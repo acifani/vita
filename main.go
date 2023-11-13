@@ -128,6 +128,21 @@ func main() {
 		return nil
 	})
 
+	addEventListener("conway", "click", func(this js.Value, args []js.Value) interface{} {
+		universe.Rules = universe.ConwayRules
+		return nil
+	})
+
+	addEventListener("seeds", "click", func(this js.Value, args []js.Value) interface{} {
+		universe.Rules = universe.SeedsRules
+		return nil
+	})
+
+	addEventListener("daynight", "click", func(this js.Value, args []js.Value) interface{} {
+		universe.Rules = universe.DayAndNightRules
+		return nil
+	})
+
 	playPauseButton := document.Call("getElementById", "play-pause")
 	addEventListener("play-pause", "click", func(this js.Value, args []js.Value) interface{} {
 		if animationID != -1 {

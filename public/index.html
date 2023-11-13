@@ -69,7 +69,7 @@
             border: 1px solid var(--border-color);
             display: inline-block;
             border-radius: 0.25rem;
-            margin-top: 1rem;
+            margin: 1rem 0;
         }
 
         label,
@@ -196,6 +196,23 @@
         </div>
 
         <p>Generations per second: <span id="gps"></span></p>
+
+        <details>
+            <summary>Advanced</summary>
+            <fieldset>
+                <legend>Game rules</legend>
+                <input type="radio" id="conway" name="action" checked="true" />
+                <label for="conway">Conway (standard)</label>
+
+                <input type="radio" id="seeds" name="action" />
+                <label for="seeds"><a href="https://conwaylife.com/wiki/OCA:Seeds" target="_blank"
+                        rel="noopener noreferrer">Seeds</a></label>
+
+                <input type="radio" id="daynight" name="action" />
+                <label for="daynight"><a href="https://conwaylife.com/wiki/OCA:Day_&_Night" target="_blank"
+                        rel="noopener noreferrer">Day & Night</a></label>
+            </fieldset>
+        </details>
     </main>
     <aside>
         <noscript>This page is powered by WebAssembly, you need JavaScript to run the game.</noscript>
