@@ -159,3 +159,31 @@ func (u *Universe) String() string {
 
 	return builder.String()
 }
+
+func (u *Universe) Parse(data string) error {
+	i := 0
+	for _, char := range data {
+		switch char {
+		case 'O':
+			if i >= int(u.Size()) {
+				return errInvalidLength
+			}
+
+			u.cells[i] = Alive
+			i++
+		case '.':
+			if i >= int(u.Size()) {
+				return errInvalidLength
+			}
+
+			u.cells[i] = Dead
+			i++
+		case '\n':
+			continue
+		default:
+			return errInvalidCharacter
+		}
+	}
+
+	return nil
+}

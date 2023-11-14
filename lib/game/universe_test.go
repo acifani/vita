@@ -129,4 +129,32 @@ func TestUniverse(t *testing.T) {
 			t.Errorf("Expected error to be %v, got %v", errInvalidLength, err)
 		}
 	})
+
+	t.Run("Parse", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+		u.Randomize(50)
+
+		u2 := NewUniverse(24, 32)
+		data := u.String()
+		if err := u2.Parse(data); err != nil {
+			t.Errorf("Expected error to be nil, got %v", err)
+		}
+
+		var i uint32
+		for i = 0; i < uint32(u.Size()); i++ {
+			if u.Cell(i) != u2.Cell(i) {
+				t.Errorf("Expected cell %d in u2 to be %d, got %d", i, u.Cell(uint32(i)), u2.Cell(uint32(i)))
+			}
+		}
+	})
+
+	t.Run("Parse error", func(t *testing.T) {
+		u := NewUniverse(24, 32)
+		u.Randomize(50)
+
+		u2 := NewUniverse(10, 10)
+		if err := u2.Parse(u.String()); err == nil {
+			t.Errorf("Expected parse error")
+		}
+	})
 }
