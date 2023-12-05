@@ -184,6 +184,186 @@ func TestConwayRule(t *testing.T) {
 	})
 }
 
+func TestRule30(t *testing.T) {
+	t.Run("Rule30 for pattern 111", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 110", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 101", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 100", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 011", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 010", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 001", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule30 for pattern 000", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule30(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule30(u.Cell(1), 0, 1))
+		}
+	})
+}
+
+func TestRule90(t *testing.T) {
+	t.Run("Rule90 for pattern 111", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 110", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 101", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 100", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 011", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 010", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 001", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule90 for pattern 000", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule90(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule90(u.Cell(1), 0, 1))
+		}
+	})
+}
+
 func TestRule110(t *testing.T) {
 	t.Run("Rule110 for pattern 111", func(t *testing.T) {
 		u := NewUniverse(1, 12)
@@ -270,6 +450,96 @@ func TestRule110(t *testing.T) {
 
 		if u.WolframRule110(u.Cell(1), 0, 1) != Dead {
 			t.Errorf("Expected cell to be dead, got %d", u.WolframRule110(u.Cell(1), 0, 1))
+		}
+	})
+}
+
+func TestRule184(t *testing.T) {
+	t.Run("Rule184 for pattern 111", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 110", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 101", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 100", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Alive
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 011", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Alive
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Alive {
+			t.Errorf("Expected cell to be alive, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 010", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Alive
+		u.cells[2] = Dead
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 001", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Alive
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule184(u.Cell(1), 0, 1))
+		}
+	})
+
+	t.Run("Rule184 for pattern 000", func(t *testing.T) {
+		u := NewUniverse(1, 12)
+		u.cells[0] = Dead
+		u.cells[1] = Dead
+		u.cells[2] = Dead
+
+		if u.WolframRule184(u.Cell(1), 0, 1) != Dead {
+			t.Errorf("Expected cell to be dead, got %d", u.WolframRule184(u.Cell(1), 0, 1))
 		}
 	})
 }
