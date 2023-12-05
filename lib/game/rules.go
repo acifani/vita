@@ -82,21 +82,72 @@ func RuleB3678S34678(cell uint8, liveNeighbors uint8) uint8 {
 	}
 }
 
+// WolframRule30 implements Rule 30 from Stephen Wolfram's "A New Kind of Science".
+// See https://en.wikipedia.org/wiki/Rule_30
+func (u *Universe) WolframRule30(cell uint8, row, column uint32) uint8 {
+	prev, next := u.OneDimensionalNeighbors(row, column)
+
+	switch cell {
+	case Alive:
+		switch {
+		case prev == Alive && next == Alive:
+			return Dead
+		case prev == Dead && next == Dead:
+			return Alive
+		case next == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	case Dead:
+		switch {
+		case prev == Alive && next == Alive:
+			return Dead
+		case prev == Alive || next == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	default:
+		return cell
+	}
+}
+
+// WolframRule90 implements Rule 90 from Stephen Wolfram's "A New Kind of Science".
+// See https://en.wikipedia.org/wiki/Rule_90
+func (u *Universe) WolframRule90(cell uint8, row, column uint32) uint8 {
+	prev, next := u.OneDimensionalNeighbors(row, column)
+
+	switch cell {
+	case Alive:
+		switch {
+		case prev == Alive && next == Alive:
+			return Dead
+		case prev == Alive || next == Alive:
+			return Alive
+		case prev == Dead && next == Dead:
+			return Dead
+		default:
+			return Alive
+		}
+	case Dead:
+		switch {
+		case prev == Alive && next == Alive:
+			return Dead
+		case prev == Alive || next == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	default:
+		return cell
+	}
+}
+
 // WolframRule110 implements Rule 110 from Stephen Wolfram's "A New Kind of Science".
 // See https://en.wikipedia.org/wiki/Rule_110
 func (u *Universe) WolframRule110(cell uint8, row, column uint32) uint8 {
-	var prev, next uint8
-	switch {
-	case column == 0:
-		prev = Dead
-		next = u.Cell(u.GetIndex(row, column+1))
-	case column >= u.width-1:
-		prev = u.Cell(u.GetIndex(row, column-1))
-		next = Dead
-	default:
-		prev = u.Cell(u.GetIndex(row, column-1))
-		next = u.Cell(u.GetIndex(row, column+1))
-	}
+	prev, next := u.OneDimensionalNeighbors(row, column)
 
 	switch cell {
 	case Alive:
@@ -118,6 +169,48 @@ func (u *Universe) WolframRule110(cell uint8, row, column uint32) uint8 {
 	default:
 		return cell
 	}
+}
+
+// WolframRule184 implements Rule 184 from Stephen Wolfram's "A New Kind of Science".
+// See https://en.wikipedia.org/wiki/Rule_184
+func (u *Universe) WolframRule184(cell uint8, row, column uint32) uint8 {
+	prev, next := u.OneDimensionalNeighbors(row, column)
+
+	switch cell {
+	case Alive:
+		switch {
+		case next == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	case Dead:
+		switch {
+		case prev == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	default:
+		return cell
+	}
+}
+
+func (u *Universe) OneDimensionalNeighbors(row, column uint32) (uint8, uint8) {
+	var prev, next uint8
+	switch {
+	case column == 0:
+		prev = Dead
+		next = u.Cell(u.GetIndex(row, column+1))
+	case column >= u.width-1:
+		prev = u.Cell(u.GetIndex(row, column-1))
+		next = Dead
+	default:
+		prev = u.Cell(u.GetIndex(row, column-1))
+		next = u.Cell(u.GetIndex(row, column+1))
+	}
+
+	return prev, next
 }
 
 // MooreNeighbors returns the number of alive neighbors for a given cell.
