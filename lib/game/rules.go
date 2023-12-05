@@ -82,6 +82,44 @@ func RuleB3678S34678(cell uint8, liveNeighbors uint8) uint8 {
 	}
 }
 
+// WolframRule110 implements Rule 110 from Stephen Wolfram's "A New Kind of Science".
+// See https://en.wikipedia.org/wiki/Rule_110
+func (u *Universe) WolframRule110(cell uint8, row, column uint32) uint8 {
+	var prev, next uint8
+	switch {
+	case column == 0:
+		prev = Dead
+		next = u.Cell(u.GetIndex(row, column+1))
+	case column >= u.width-1:
+		prev = u.Cell(u.GetIndex(row, column-1))
+		next = Dead
+	default:
+		prev = u.Cell(u.GetIndex(row, column-1))
+		next = u.Cell(u.GetIndex(row, column+1))
+	}
+
+	switch cell {
+	case Alive:
+		switch {
+		case prev == Alive && next == Alive:
+			return Dead
+		default:
+			return Alive
+		}
+	case Dead:
+		switch {
+		case prev == Alive && next == Alive:
+			return Alive
+		case next == Alive:
+			return Alive
+		default:
+			return Dead
+		}
+	default:
+		return cell
+	}
+}
+
 // MooreNeighbors returns the number of alive neighbors for a given cell.
 // It uses the Moore neighborhood, which includes the eight cells surrounding
 // the given cell.
