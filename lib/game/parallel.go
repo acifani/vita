@@ -28,11 +28,17 @@ type ParallelUniverse struct {
 	BottomNeighbor *NeighborConnection
 	LeftNeighbor   *NeighborConnection
 	RightNeighbor  *NeighborConnection
+
+	send NeighborData
 }
 
 func NewParallelUniverse(height, width uint32) *ParallelUniverse {
 	p := &ParallelUniverse{
 		Universe: NewUniverse(height, width),
+		send: NeighborData{
+			Generation: 0,
+			Cells:      make([]uint8, height*width),
+		},
 	}
 	p.Rules = p.rules
 	return p
@@ -158,38 +164,36 @@ func (p *ParallelUniverse) WaitForNeighborsData() {
 
 func (p *ParallelUniverse) SendDataToNeighbors() {
 	var wg sync.WaitGroup
-	data := NeighborData{
-		Generation: p.Generation,
-		Cells:      make([]uint8, len(p.cells)),
-	}
-	copy(data.Cells, p.cells)
+
+	p.send.Generation = p.Generation
+	copy(p.send.Cells, p.cells)
 
 	if p.TopNeighbor != nil {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			p.TopNeighbor.SendCh <- data
+			p.TopNeighbor.SendCh <- p.send
 		}()
 	}
 	if p.BottomNeighbor != nil {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			p.BottomNeighbor.SendCh <- data
+			p.BottomNeighbor.SendCh <- p.send
 		}()
 	}
 	if p.LeftNeighbor != nil {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			p.LeftNeighbor.SendCh <- data
+			p.LeftNeighbor.SendCh <- p.send
 		}()
 	}
 	if p.RightNeighbor != nil {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			p.RightNeighbor.SendCh <- data
+			p.RightNeighbor.SendCh <- p.send
 		}()
 	}
 
