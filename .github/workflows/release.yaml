@@ -10,12 +10,12 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: setup tinygo
-        uses: acifani/setup-tinygo@v2
+        uses: acifani/setup-tinygo@v3
         with:
-          tinygo-version: 0.30.0
+          tinygo-version: 0.40.1
 
       - name: build
         run: make build
